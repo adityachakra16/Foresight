@@ -118,8 +118,16 @@ body {
 }
 
 .button-primary {
-  background-color: #e8e9e7;
-  color: #1a1b20;
+  background-color: #ed9213;
+  color: #13161f;
+}
+
+.button-buy {
+  background-color: #2ecc71;
+}
+
+.button-selling {
+  background-color: #e74c3c;
 }
 
 .button-outlined {

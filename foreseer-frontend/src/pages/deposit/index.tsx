@@ -1,7 +1,7 @@
 import MetaHead from "@/common/seo/MetaHead";
 import DesktopLayout from "@/components/layouts/DesktopLayout";
 
-export default function Home() {
+export default function DepositPage() {
   return (
     <>
       <MetaHead

@@ -15,11 +15,11 @@ export default function MetaHead({
   noIndex = false,
   noFollow = false,
 }: props): JSX.Element {
-  const siteURL = "foreseer.finance";
+  const siteURL = "foresight.finance";
   const pathName = useRouter().pathname;
   const pageURL = pathName === "/" ? siteURL : siteURL + pathName;
   const twitterHandle = "@adityach4u";
-  const siteName = "Foreseer Finance";
+  const siteName = "Foresight Finance";
   return (
     <NextSeo
       title={title}
@@ -34,7 +34,7 @@ export default function MetaHead({
         images: [
           {
             url: image,
-            alt: "Dappy Finance",
+            alt: "Foresight Finance",
           },
         ],
         site_name: siteName,

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface MarketContextType {
-  market: DetailedMarketType;
+  market: DetailedMarketType | undefined;
 }
 
 export const MarketContext = createContext<MarketContextType>(

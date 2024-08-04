@@ -1,1 +1,1 @@
-# foreseer.finance
+# Foresight

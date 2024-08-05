@@ -1,9 +1,16 @@
+import { accountType } from "@/config";
 import {
   fetchUserCreatedMarkets,
   fetchUserPositions,
   fetchUserProfile,
   fetchUserTrades,
 } from "@/services/User";
+import {
+  useAccount,
+  useLogout,
+  useSignerStatus,
+  useUser,
+} from "@alchemy/aa-alchemy/react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface UserContextType {
@@ -16,6 +23,7 @@ interface UserContextType {
   userPositions: PositionType[];
   userCreatedMarkets: MarketType[];
   userTrades: TradesType[];
+  handleLogout: () => void;
 }
 
 export const UserContext = createContext<UserContextType>(
@@ -23,7 +31,6 @@ export const UserContext = createContext<UserContextType>(
 );
 
 export function useProviderUserContext() {
-  const [firstLoad, setFirstLoad] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserType | null | undefined>(
     undefined
   );
@@ -34,16 +41,19 @@ export function useProviderUserContext() {
   const [userCreatedMarkets, setUserCreatedMarkets] = useState<MarketType[]>(
     []
   );
+  const user = useUser();
+  const { address } = useAccount({ type: accountType });
+  const { logout } = useLogout();
 
   const refreshUserProfile = async () => {
     setLoadingUser(true);
-    const user = await fetchUserProfile();
-    if (!user) {
+    const u = await fetchUserProfile();
+    if (!u) {
       setCurrentUser(null);
       setLoadingUser(false);
       return;
     }
-    setCurrentUser(user as UserType);
+    setCurrentUser(u as UserType);
     setLoadingUser(false);
   };
 
@@ -66,7 +76,7 @@ export function useProviderUserContext() {
   };
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser?.ethAddress) {
       void (async () => {
         await refreshMarkets();
         await refreshTrades();
@@ -76,23 +86,17 @@ export function useProviderUserContext() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (currentUser || !firstLoad) return;
+    console.log({ user });
+    if (!user?.address) return;
     void (async () => {
       refreshUserProfile();
     })();
-  }, [firstLoad]);
+  }, [user]);
 
-  useEffect(() => {
-    if (currentUser?.isVerified) {
-      setLoginModalOpen(false);
-    }
-  }, [currentUser?.isVerified]);
-
-  useEffect(() => {
-    if (!firstLoad) {
-      setFirstLoad(true);
-    }
-  }, []);
+  const handleLogout = async () => {
+    await logout();
+    setCurrentUser(null);
+  };
 
   return {
     currentUser,
@@ -104,7 +108,8 @@ export function useProviderUserContext() {
     userPositions,
     userCreatedMarkets,
     userTrades,
+    handleLogout,
   };
 }
 
-export const useUser = () => useContext(UserContext);
+export const useForesightUser = () => useContext(UserContext);

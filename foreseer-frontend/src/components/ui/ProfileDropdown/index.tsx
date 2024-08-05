@@ -4,7 +4,7 @@ import { ButtonProps } from "@/components/atoms/Button/Button";
 import { Flex } from "@/components/atoms/Flex";
 import Menu from "@/components/atoms/Menu";
 import Popover from "@/components/atoms/Popover";
-import { useUser } from "@/context/User";
+import { useForesightUser } from "@/context/User";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export const ProfileDropdown = ({
   loginButtonType,
 }: ProfileDropdownInterface) => {
   const router = useRouter();
-  const { setLoginModalOpen, currentUser } = useUser();
+  const { setLoginModalOpen, currentUser } = useForesightUser();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const ProfileDropdownOptions = [

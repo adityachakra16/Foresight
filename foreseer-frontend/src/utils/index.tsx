@@ -110,3 +110,8 @@ export function toCamelCase(obj: any): any {
     return result;
   }, {} as any);
 }
+
+export const validateEmail = (email: string) => {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};

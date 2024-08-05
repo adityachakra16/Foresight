@@ -1,5 +1,7 @@
 interface UserType {
+  id: string;
   email: string;
+  ethAddress: string;
   isVerified: boolean;
   ethAddress: string;
 }

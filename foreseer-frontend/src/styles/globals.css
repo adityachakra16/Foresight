@@ -186,7 +186,7 @@ body {
   .arrow-container.show-arrow {
   opacity: 1;
   transform: translateX(0);
-  background-color: #e8e9e7;
+  background-color: transparent;
   color: #1a1b20;
 }
 .button-content {
@@ -484,7 +484,7 @@ body {
   align-items: flex-start;
   justify-content: center;
   background-color: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc4f;
   border-radius: 1rem;
   width: 100%;
   color: #e8e9e7;

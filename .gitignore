@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 *.drawio
+foreseer_backend/venv
+*__pycache__/

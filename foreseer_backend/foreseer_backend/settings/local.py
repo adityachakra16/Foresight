@@ -15,3 +15,10 @@ DATABASES = {
 FRONTEND_URL = "http://localhost:3000"
 
 ENVIRONMENT = "local"
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # The origin for frontend
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+]

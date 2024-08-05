@@ -32,6 +32,6 @@ CACHES = {
 ALLOWED_HOSTS = []  # Add your server's IP or domain name
 
 
-FRONTEND_URL = "foresight-finance.vercel.app"
+FRONTEND_URL = "https://foresight-finance.vercel.app"
 
 ENVIRONMENT = "production"

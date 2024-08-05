@@ -23,7 +23,7 @@ export const DesktopLayout: FC<SidebarProps> = ({
       }}
       vertical
     >
-      <Navbar showLogo={showLogo} showProfile={showProfile} />
+      <Navbar />
 
       <Flex
         vertical

@@ -4,17 +4,30 @@ import { Typography } from "@/components/atoms/Typography";
 import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { Search } from "@/components/ui/Search";
 import { useGlobal } from "@/context/Global";
+import { useForesightUser } from "@/context/User";
+import {
+  IDKitWidget,
+  ISuccessResult,
+  VerificationLevel,
+} from "@worldcoin/idkit";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { FaPlus } from "react-icons/fa";
 import { LuActivity } from "react-icons/lu";
 import { MdOutlineExplore } from "react-icons/md";
+import { PiSuitcaseSimpleLight } from "react-icons/pi";
 
-const { Heading } = Typography;
+const { Heading, Text } = Typography;
 
 interface NavbarProps {}
 
 export const Navbar = () => {
+  const router = useRouter();
   const { markets, setFilteredMarkets } = useGlobal();
+  const { currentUser, setLoginModalOpen, setVerificationModalOpen } =
+    useForesightUser();
 
   return (
     <Flex
@@ -22,17 +35,10 @@ export const Navbar = () => {
       justify="space-between"
       align="center"
       style={{
-        width: "100%",
         padding: "1.6rem",
       }}
     >
-      <Flex
-        gap="large"
-        align="center"
-        style={{
-          width: "100%",
-        }}
-      >
+      <Flex gap="large" align="center">
         <Image
           src={"/logoTransparentBgFull.svg"}
           alt="Logo"
@@ -54,7 +60,6 @@ export const Navbar = () => {
             </Link>
           </Flex>
           <Flex
-            gap="small"
             align="center"
             style={{
               width: "100%",
@@ -63,12 +68,27 @@ export const Navbar = () => {
             <Search
               items={markets}
               onSearchComplete={(items) => setFilteredMarkets(items)}
-            />
+            />{" "}
+            <Button
+              type="secondary"
+              icon={<FaPlus />}
+              onClick={() => {
+                if (!currentUser?.ethAddress) {
+                  setLoginModalOpen(true);
+                  return;
+                } else if (currentUser?.isVerified) {
+                  setVerificationModalOpen(true);
+                  return;
+                } else router.push("/markets/create");
+              }}
+            >
+              Create Market
+            </Button>
           </Flex>
         </Flex>{" "}
       </Flex>
 
-      <Flex gap="large" align="center">
+      <Flex gap="small" align="center">
         <ProfileDropdown />
       </Flex>
     </Flex>

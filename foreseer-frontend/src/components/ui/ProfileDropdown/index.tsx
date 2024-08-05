@@ -8,8 +8,12 @@ import { useForesightUser } from "@/context/User";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { PiSuitcaseSimpleLight } from "react-icons/pi";
+import { Typography } from "@/components/atoms/Typography";
 import { AiOutlineLogin } from "react-icons/ai";
+import { BsCashStack } from "react-icons/bs";
 
+const { Text } = Typography;
 interface ProfileDropdownInterface {
   loginButtonType?: ButtonProps["type"];
 }
@@ -56,51 +60,66 @@ export const ProfileDropdown = ({
 
   return (
     <Flex align="center">
-      {currentUser?.isVerified ? (
-        <Popover
-          isOpen={profileDropdownOpen}
-          setIsOpen={setProfileDropdownOpen}
-          trigger={
-            <Avatar
-              icon={
-                <Image
-                  src={`https://api.dicebear.com/8.x/initials/svg?seed=${currentUser?.email}&backgroundColor=transparent`}
-                  alt="avatar"
-                  width={80}
-                  height={80}
+      {currentUser?.id ? (
+        <Flex align="center">
+          <Flex gap="small" align="center">
+            <Button type="transparent" icon={<PiSuitcaseSimpleLight />}>
+              <Text>{currentUser?.portfolioValue || 0.0}</Text>
+            </Button>
+            <Button type="transparent" icon={<BsCashStack />}>
+              <Text>{currentUser?.portfolioValue || 0.0}</Text>
+            </Button>
+          </Flex>
+          <Popover
+            isOpen={profileDropdownOpen}
+            setIsOpen={setProfileDropdownOpen}
+            placement="bottom-right"
+            trigger={
+              <Flex align="center">
+                <Avatar
+                  icon={
+                    <Image
+                      src={`https://api.dicebear.com/8.x/initials/svg?seed=${currentUser?.email}&backgroundColor=transparent`}
+                      alt="avatar"
+                      width={80}
+                      height={80}
+                    />
+                  }
+                  size={"medium"}
+                  glassy
+                  onClick={() => {
+                    setProfileDropdownOpen(true);
+                  }}
                 />
-              }
-              size={"medium"}
-              glassy
-              onClick={() => {
-                setProfileDropdownOpen(true);
-              }}
-            />
-          }
-          content={
-            <Flex vertical gap={"small"}>
-              <Flex
-                gap={"small"}
-                style={{
-                  borderBottom: "1px solid #e0e0e0",
-                }}
-              >
-                <Menu items={ProfileDropdownTopOptions} />
-              </Flex>{" "}
-              <Flex
-                gap={"small"}
-                style={{
-                  borderBottom: "1px solid #e0e0e0",
-                }}
-              >
-                <Menu items={ProfileDropdownOptions} />
-              </Flex>{" "}
-              <Flex gap={"small"} style={{}}>
-                <Menu items={ProfileDropdownBottomOptions} />
               </Flex>
-            </Flex>
-          }
-        />
+            }
+            content={
+              <Flex vertical gap={"small"}>
+                <Flex
+                  gap={"small"}
+                  style={{
+                    borderBottom: "1px solid grey",
+                    paddingBottom: "0.8rem",
+                  }}
+                >
+                  <Menu items={ProfileDropdownTopOptions} />
+                </Flex>{" "}
+                <Flex
+                  gap={"small"}
+                  style={{
+                    borderBottom: "1px solid grey",
+                    paddingBottom: "0.8rem",
+                  }}
+                >
+                  <Menu items={ProfileDropdownOptions} />
+                </Flex>{" "}
+                <Flex gap={"small"} style={{}}>
+                  <Menu items={ProfileDropdownBottomOptions} />
+                </Flex>
+              </Flex>
+            }
+          />
+        </Flex>
       ) : (
         <Button
           type={loginButtonType || "primary"}

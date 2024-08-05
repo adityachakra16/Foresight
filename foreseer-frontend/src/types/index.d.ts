@@ -4,6 +4,7 @@ interface UserType {
   ethAddress: string;
   isVerified: boolean;
   ethAddress: string;
+  portfolioValue: number;
 }
 
 interface MarketCollectionType {

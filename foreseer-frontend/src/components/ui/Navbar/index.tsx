@@ -18,6 +18,7 @@ import { FaPlus } from "react-icons/fa";
 import { LuActivity } from "react-icons/lu";
 import { MdOutlineExplore } from "react-icons/md";
 import { PiSuitcaseSimpleLight } from "react-icons/pi";
+import { WorldcoinVerificationButton } from "../WorldcoinVerificationButton";
 
 const { Heading, Text } = Typography;
 
@@ -26,8 +27,7 @@ interface NavbarProps {}
 export const Navbar = () => {
   const router = useRouter();
   const { markets, setFilteredMarkets } = useGlobal();
-  const { currentUser, setLoginModalOpen, setVerificationModalOpen } =
-    useForesightUser();
+  const { currentUser, setLoginModalOpen } = useForesightUser();
 
   return (
     <Flex
@@ -76,14 +76,12 @@ export const Navbar = () => {
                 if (!currentUser?.ethAddress) {
                   setLoginModalOpen(true);
                   return;
-                } else if (currentUser?.isVerified) {
-                  setVerificationModalOpen(true);
-                  return;
                 } else router.push("/markets/create");
               }}
             >
               Create Market
             </Button>
+            {/* <WorldcoinVerificationButton /> */}
           </Flex>
         </Flex>{" "}
       </Flex>

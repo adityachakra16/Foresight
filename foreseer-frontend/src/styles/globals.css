@@ -967,6 +967,7 @@ body {
   justify-content: start;
   align-items: center;
   width: 100%;
+  border-color: #cccccc4f;
 }
 
 .input {
@@ -991,14 +992,14 @@ body {
 /* Ensure the overall datepicker has a black background */
 .react-datepicker {
   background-color: rgb(39, 39, 39);
-  border: 1px solid #444;
+  border: 1px solid #cccccc4f;
   color: #fff;
 }
 
 /* Header customization */
 .react-datepicker__header {
   background-color: rgb(39, 39, 39) !important;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #cccccc4f;
 }
 
 /* Navigation buttons customization */
@@ -1012,7 +1013,7 @@ body {
 }
 
 .react-datepicker__navigation-icon::before {
-  border-color: #fff !important; /* Ensuring the arrow color is white */
+  border-color: #cccccc4f !important; /* Ensuring the arrow color is white */
 }
 
 /* Month and year header customization */
@@ -1047,7 +1048,7 @@ body {
 .react-datepicker__year-dropdown {
   background-color: rgb(39, 39, 39) !important;
   color: #fff;
-  border: 1px solid #444;
+  border: 1px solid #cccccc4f;
 }
 
 /* Month container customization */
@@ -1060,7 +1061,7 @@ body {
 .react-datepicker__year-read-view {
   background-color: rgb(39, 39, 39) !important;
   color: #fff;
-  border: 1px solid #444;
+  border: 1px solid #cccccc4f;
 }
 
 /* Month and year dropdown option customization */

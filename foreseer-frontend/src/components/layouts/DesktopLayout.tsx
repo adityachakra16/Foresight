@@ -29,6 +29,7 @@ export const DesktopLayout: FC<SidebarProps> = ({
         vertical
         style={{
           padding: "4rem",
+          paddingTop: "1.2rem",
           width: "100%",
           overflow: "auto",
         }}

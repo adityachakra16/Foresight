@@ -9,7 +9,7 @@ import { LoginModal } from "@/components/ui/LoginModal";
 import { cookieToInitialState } from "@alchemy/aa-alchemy/config";
 import { AlchemyAccountProvider } from "@alchemy/aa-alchemy/react";
 import { config, queryClient } from "@/config";
-import { VerificationModal } from "@/components/ui/VerficationModal";
+import { IdentityVerification } from "@/components/ui/VerficationModal";
 
 export const inter = Inter({ subsets: ["latin"] });
 export const comfortaa = Comfortaa({ subsets: ["latin"] });
@@ -35,7 +35,6 @@ const UserProviededComponents = ({
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
       />
-      <VerificationModal />
     </>
   );
 };

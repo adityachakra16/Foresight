@@ -24,8 +24,6 @@ interface UserContextType {
   userCreatedMarkets: MarketType[];
   userTrades: TradesType[];
   handleLogout: () => void;
-  verificationModalOpen: boolean;
-  setVerificationModalOpen: (open: boolean) => void;
 }
 
 export const UserContext = createContext<UserContextType>(
@@ -38,7 +36,6 @@ export function useProviderUserContext() {
   );
   const [loadingUser, setLoadingUser] = useState<boolean>(true);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
   const [userPositions, setUserPositions] = useState<PositionType[]>([]);
   const [userTrades, setUserTrades] = useState<TradesType[]>([]);
   const [userCreatedMarkets, setUserCreatedMarkets] = useState<MarketType[]>(
@@ -112,8 +109,6 @@ export function useProviderUserContext() {
     userCreatedMarkets,
     userTrades,
     handleLogout,
-    verificationModalOpen,
-    setVerificationModalOpen,
   };
 }
 

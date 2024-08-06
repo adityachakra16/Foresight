@@ -6,8 +6,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { proof, signal } = req.body;
-  const appId = process.env.APP_ID as string;
-  const action = process.env.ACTION_ID as string;
+  const appId = process.env.NEXT_PUBLIC_WORLDCOIN_APP_ID as string;
+  const action = process.env.NEXT_PUBLIC_WORLDCOIN_ACTION_ID as string;
   const verifyRes = (await verifyCloudProof(
     proof,
     appId as `app_${string}`,

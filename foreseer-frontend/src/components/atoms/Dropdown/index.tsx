@@ -7,7 +7,7 @@ import Select, {
 
 interface Option {
   value: string;
-  label: string;
+  label: string | Element;
 }
 
 interface DropdownProps {
@@ -73,6 +73,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       ...provided,
       backgroundColor: "rgba(39, 39, 39, 1)", // Change the dropdown menu background color
       "z-index": 999,
+      overflow: "auto",
       ...menuStyles,
     }),
     option: (provided: any, state: { isSelected: any; isFocused: any }) => ({

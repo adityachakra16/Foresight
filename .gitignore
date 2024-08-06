@@ -132,3 +132,6 @@ dist
 *.drawio
 foreseer_backend/venv
 *__pycache__/
+
+
+foreseer-contracts/lib

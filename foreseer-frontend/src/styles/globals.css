@@ -123,16 +123,18 @@ body {
 }
 
 .button-buy {
-  background-color: #2ecc71;
+  background-color: rgba(23, 188, 131, 0.1);
+  border: 1px solid #0c5e41;
 }
 
-.button-selling {
-  background-color: #e74c3c;
+.button-sell {
+  background-color: rgba(255, 99, 132, 0.1);
+  border: 1px solid #58212d;
 }
 
 .button-outlined {
   background-color: transparent;
-  border: 1px solid #e8e9e7;
+  border: 1px solid #e8e9e738;
   color: #e8e9e7;
   transition: all 0.3s ease-out;
 }

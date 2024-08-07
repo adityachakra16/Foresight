@@ -12,7 +12,7 @@ export default function MarketplacePage() {
         }
         image="https://ik.imagekit.io/brandamp/asset_2.png?updatedAt=1701169481656"
       />
-      <DesktopLayout showSearch={false}>
+      <DesktopLayout>
         <CreateMarket />
       </DesktopLayout>
     </>

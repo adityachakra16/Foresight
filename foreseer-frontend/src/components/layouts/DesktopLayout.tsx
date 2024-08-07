@@ -6,16 +6,8 @@ const { Text, Heading } = Typography;
 
 interface SidebarProps {
   children?: React.ReactNode;
-  showLogo?: boolean;
-  showSearch?: boolean;
-  showProfile?: boolean;
 }
-export const DesktopLayout: FC<SidebarProps> = ({
-  children,
-  showLogo = true,
-  showSearch = true,
-  showProfile = true,
-}) => {
+export const DesktopLayout: FC<SidebarProps> = ({ children }) => {
   return (
     <Flex
       style={{
@@ -31,9 +23,7 @@ export const DesktopLayout: FC<SidebarProps> = ({
           padding: "4rem",
           paddingTop: "1.2rem",
           width: "100%",
-          overflow: "auto",
         }}
-        gap={2.8}
       >
         {children}
       </Flex>

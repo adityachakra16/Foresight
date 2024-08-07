@@ -115,3 +115,11 @@ export const validateEmail = (email: string) => {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
 };
+
+export function trimLargeString(str: string, maxLength: number): string {
+  if (str.length <= maxLength) {
+    return str;
+  }
+
+  return `${str.slice(0, maxLength)}...`;
+}

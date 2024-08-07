@@ -3,7 +3,14 @@ import { FaArrowRight } from "react-icons/fa";
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
-  type?: "primary" | "secondary" | "tertiary" | "transparent" | "outlined";
+  type?:
+    | "primary"
+    | "secondary"
+    | "tertiary"
+    | "transparent"
+    | "outlined"
+    | "buy"
+    | "sell";
   shape?: "circle" | "normal";
   size?: "small" | "medium" | "large";
   bordered?: boolean;

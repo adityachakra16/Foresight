@@ -16,8 +16,10 @@ interface MarketCollectionType {
 }
 
 interface OutcomeType {
-  yes: number;
-  no: number;
+  id: string;
+  name: string;
+  description: string;
+  probability: number;
 }
 
 interface OrderType {
@@ -37,13 +39,13 @@ interface MarketType {
   name: string;
   description: string;
   totalAmount: number;
-  expiration: number;
+  expiration: string;
 }
 
 interface DetailedMarketType extends MarketType {
-  outcomes: OutcomeType;
-  orderbook: OrderbookType;
-  rewards: number;
+  outcomes: OutcomeType[];
+  orderbook?: OrderbookType;
+  rewards?: number;
 }
 
 type PositionType = {

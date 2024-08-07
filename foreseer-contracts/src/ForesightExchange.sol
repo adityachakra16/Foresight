@@ -1,18 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { Auth } from "./mixins/Auth.sol";
-import { Assets } from "./mixins/Assets.sol";
-import { Hashing } from "./mixins/Hashing.sol";
-import { Trading } from "./mixins/Trading.sol";
-import { Registry } from "./mixins/Registry.sol";
-import { Signatures } from "./mixins/Signatures.sol";
-import { NonceManager } from "./mixins/NonceManager.sol";
-import { AssetOperations } from "./mixins/AssetOperations.sol";
-import { Order } from "./libraries/OrderStructs.sol";
+import {Auth} from "./mixins/Auth.sol";
+import {Assets} from "./mixins/Assets.sol";
+import {Hashing} from "./mixins/Hashing.sol";
+import {Trading} from "./mixins/Trading.sol";
+import {Registry} from "./mixins/Registry.sol";
+import {Signatures} from "./mixins/Signatures.sol";
+import {NonceManager} from "./mixins/NonceManager.sol";
+import {AssetOperations} from "./mixins/AssetOperations.sol";
+import {Order} from "./libraries/OrderStructs.sol";
+import {ReentrancyGuard} from "src/common/ReentrancyGuard.sol";
 
 contract ForesightExchange is
     Auth,
+    ReentrancyGuard,
     Assets,
     AssetOperations,
     Hashing("Polymarket CTF Exchange", "1"),
@@ -21,27 +23,19 @@ contract ForesightExchange is
     Signatures,
     Trading
 {
-    constructor(address _collateral, address _ctf, address _proxyFactory, address _safeFactory)
-        Assets(_collateral, _ctf)
-        Signatures(_proxyFactory, _safeFactory)
-    { }
+    constructor(address _collateral, address _ctf) Assets(_collateral, _ctf) Signatures() {}
 
     /// @notice Fills an order
     /// @param order        - The order to be filled
     /// @param fillAmount   - The amount to be filled, always in terms of the maker amount
-    function fillOrder(Order memory order, uint256 fillAmount) external nonReentrant onlyOperator notPaused {
+    function fillOrder(Order memory order, uint256 fillAmount) external nonReentrant onlyOperator {
         _fillOrder(order, fillAmount, msg.sender);
     }
 
     /// @notice Fills a set of orders
     /// @param orders       - The order to be filled
     /// @param fillAmounts  - The amounts to be filled, always in terms of the maker amount
-    function fillOrders(Order[] memory orders, uint256[] memory fillAmounts)
-        external
-        nonReentrant
-        onlyOperator
-        notPaused
-    {
+    function fillOrders(Order[] memory orders, uint256[] memory fillAmounts) external nonReentrant onlyOperator {
         _fillOrders(orders, fillAmounts, msg.sender);
     }
 
@@ -55,7 +49,7 @@ contract ForesightExchange is
         Order[] memory makerOrders,
         uint256 takerFillAmount,
         uint256[] memory makerFillAmounts
-    ) external nonReentrant onlyOperator notPaused {
+    ) external nonReentrant onlyOperator {
         _matchOrders(takerOrder, makerOrders, takerFillAmount, makerFillAmounts);
     }
 

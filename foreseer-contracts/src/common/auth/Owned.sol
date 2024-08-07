@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
 
-import {IOwned, IOwnedEE} from "common/auth/interfaces/IOwned.sol";
+import {IOwned, IOwnedEE} from "src/common/auth/interfaces/IOwned.sol";
 
 /// @notice Forked from solmate to add interface and custom errors.
 /// @notice Simple single owner authorization mixin.

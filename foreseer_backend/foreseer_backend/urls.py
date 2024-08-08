@@ -18,9 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from oms import urls as oms_urls
+from market import urls as market_urls
+from user import urls as user_urls
 
 FORESIGHT_URLS = [
     oms_urls.urlpatterns,
+    market_urls.urlpatterns,
+    user_urls.urlpatterns,
 ]
 
 urlpatterns = [

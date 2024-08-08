@@ -50,13 +50,16 @@ interface DetailedMarketType extends MarketType {
 
 type PositionType = {
   market: MarketType;
-  amount: number;
+  shares: number;
   outcome: "yes" | "no";
+  avgPrice: number;
+  currentValue: number;
+  returns: number;
 };
 
 type TradesType = {
   market: MarketType;
-  amount: number;
+  shares: number;
   outcome: "yes" | "no";
   price: number;
 };

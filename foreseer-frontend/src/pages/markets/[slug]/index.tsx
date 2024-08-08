@@ -1,5 +1,6 @@
 import MetaHead from "@/common/seo/MetaHead";
 import DesktopLayout from "@/components/layouts/DesktopLayout";
+import { Market } from "@/components/ui/Market";
 import { MarketContext, useProviderMarketContext } from "@/context/Market";
 
 export default function MarketPage() {
@@ -18,7 +19,9 @@ export default function MarketPage() {
         image="https://ik.imagekit.io/brandamp/asset_2.png?updatedAt=1701169481656"
       />
       <DesktopLayout>
-        <MarketContext.Provider value={marketContext}></MarketContext.Provider>
+        <MarketContext.Provider value={marketContext}>
+          <Market />
+        </MarketContext.Provider>
       </DesktopLayout>
     </>
   );

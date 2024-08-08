@@ -15,6 +15,7 @@ const Tag = ({ children, ...props }: TagProps) => {
       style={{
         cursor: props.onClick ? "pointer" : "default",
         borderColor: props.selected ? "#F9FAFB" : "rgba(97, 96, 97, 0.3)",
+        ...props.style,
       }}
     >
       {children}

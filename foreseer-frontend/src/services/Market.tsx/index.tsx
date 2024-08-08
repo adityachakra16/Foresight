@@ -147,14 +147,36 @@ export const fetchPublicMarkets = async () => {
 };
 
 export const fetchMarket = async (marketId: string) => {
-  const res = await sendRequest(`/markets/${marketId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (res.success) {
-    return res.data;
-  }
-  return false;
+  // const res = await sendRequest(`/markets/${marketId}`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  // });
+  // if (res.success) {
+  //   return res.data;
+  // }
+  // return false;
+  return {
+    name: "Will Polkadot reach $100 by 2022?",
+    id: "6",
+    description: "Will Polkadot reach $100 by 2022?",
+    totalAmount: 1000,
+
+    outcomes: [
+      {
+        id: "1",
+        name: "Yes",
+        description: "Yes",
+        probability: 0.5,
+      },
+      {
+        id: "2",
+        name: "No",
+        description: "No",
+        probability: 0.5,
+      },
+    ],
+    expiration: new Date().toISOString(),
+  };
 };

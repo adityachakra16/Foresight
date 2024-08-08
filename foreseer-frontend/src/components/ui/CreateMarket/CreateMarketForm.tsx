@@ -9,6 +9,8 @@ import { MdPriceCheck } from "react-icons/md";
 import { CgWebsite } from "react-icons/cg";
 import { AiOutlineBlock } from "react-icons/ai";
 import { Button } from "@/components/atoms/Button";
+import { useContractActions } from "@/services/ContractActions";
+import { TransactionStatus } from "../TransactionStatus";
 const { Text } = Typography;
 
 interface CreateMarketFormProps {}
@@ -151,6 +153,13 @@ export const CreateMarketForm = () => {
   const [resolutionOracleFeedType, setResolutionOracleFeedType] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [priceFeedAddress, setPriceFeedAddress] = useState("");
+  const {
+    createMarket,
+    sendUserOperationResult,
+    isSendingUserOperation,
+    isSendUserOperationError,
+  } = useContractActions();
+
   return (
     <Flex vertical gap="large">
       <Flex vertical>
@@ -285,11 +294,27 @@ export const CreateMarketForm = () => {
           style={{
             width: "100%",
           }}
-          onClick={() => console.log("Create Market")}
+          onClick={() => {
+            console.log("Create Market");
+            createMarket({
+              name,
+              description,
+              expiration: expiration?.toString() || "",
+              resolutionOracleFeedType,
+              websiteUrl,
+              priceFeedAddress,
+            });
+          }}
+          loading={isSendingUserOperation}
         >
           Create Market
         </Button>
       </Flex>
+      <TransactionStatus
+        sendUserOperationResult={sendUserOperationResult}
+        isSendingUserOperation={isSendingUserOperation}
+        isSendUserOperationError={isSendUserOperationError}
+      />
     </Flex>
   );
 };

@@ -123,3 +123,14 @@ export function trimLargeString(str: string, maxLength: number): string {
 
   return `${str.slice(0, maxLength)}...`;
 }
+
+export function numberToBytes32(num: number) {
+  // Convert the number to a hexadecimal string
+  const hexString = num.toString(16);
+
+  // Pad the string to 64 characters (32 bytes)
+  const paddedHexString = hexString.padStart(64, "0");
+
+  // Add the '0x' prefix
+  return "0x" + paddedHexString;
+}

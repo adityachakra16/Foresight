@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
 ] + CUSTOM_APPS
 
 MIDDLEWARE = [
@@ -53,6 +54,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "foreseer_backend.urls"
@@ -120,3 +123,20 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # The origin for frontend
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+REPUTATION_TOKEN_ADDRESS = "0x15C990c5B41E6e390e1d3305160517e9b1FdD9dd"

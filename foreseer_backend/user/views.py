@@ -23,8 +23,13 @@ class VerifiedUserView(View):
         return JsonResponse({"success": True, "data": user})
 
     def post(self, request):
-        email = request.POST.get("email")
-        ethAddress = request.POST.get("ethAddress")
-        user = create_user(email, ethAddress)
+        data = json.loads(request.body)
+        email = data.get("email")
+        ethAddress = data.get("eth_address")
+        verification_proof = data.get("verification_proof")
+        user = create_user(email, ethAddress, verification_proof)
 
-        return JsonResponse({"success": True, "data": "User is verified"})
+        if not user:
+            return JsonResponse({"success": False, "error": "User not found"})
+
+        return JsonResponse({"success": True, "data": user})

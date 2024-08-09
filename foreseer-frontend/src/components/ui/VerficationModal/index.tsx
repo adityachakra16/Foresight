@@ -12,6 +12,7 @@ import { Flex } from "@/components/atoms/Flex";
 import Card from "@/components/atoms/Card";
 import { GiMoonOrbit } from "react-icons/gi";
 import { FaMobile } from "react-icons/fa";
+import { createVerifiedUser } from "@/services/User";
 
 const { Heading, Text } = Typography;
 
@@ -19,6 +20,7 @@ interface IdentityVerificationProps {}
 
 export const IdentityVerification = ({}: IdentityVerificationProps) => {
   const [selected, setSelected] = useState<"device" | "orb">("device");
+  const { currentUser, setCurrentUser } = useForesightUser();
 
   const onSuccess = (result: ISuccessResult) => {
     console.log({ result });
@@ -26,15 +28,18 @@ export const IdentityVerification = ({}: IdentityVerificationProps) => {
 
   const handleVerify = async (result: ISuccessResult) => {
     console.log({ result });
-    const res = await fetch("/api/verify", {
-      method: "POST",
-      body: JSON.stringify({
-        proof: result,
-      }),
-    });
-    const data = await res.json();
-    console.log({ data });
+    const res = await createVerifiedUser(
+      currentUser?.ethAddress || "0x55B23ed53Fe13060183b92979c737A8eF9A73b73",
+      currentUser?.email || "adityachakra16@gmail.com",
+      result
+    );
+
+    if (res) setCurrentUser({ ...currentUser, isVerified: true } as UserType);
   };
+
+  useEffect(() => {
+    console.log({ currentUser });
+  }, [currentUser]);
 
   return (
     <Flex gap="large" vertical>

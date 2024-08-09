@@ -7,4 +7,14 @@ urlpatterns = [
         views.VerifiedUserView.as_view(),
         name="user",
     ),
+    path(
+        "api/user/markets",
+        views.VerifiedUserView.as_view(),
+        name="user",
+    ),
+    path(
+        "api/user/positions",
+        views.VerifiedUserView.as_view(),
+        name="user",
+    ),
 ]

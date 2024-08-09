@@ -9,6 +9,7 @@ contract ReputationToken is ERC1155, Auth {
     uint256 private _currentTokenId;
 
     mapping(uint256 => uint256) private _reputationScores;
+    mapping(address => uint256) private _userTokens;
 
     constructor() ERC1155("https://api.foresight.finance/token/{id}.json") {}
 
@@ -17,10 +18,14 @@ contract ReputationToken is ERC1155, Auth {
     }
 
     function mint(address to) public onlyAdmin returns (uint256) {
+        require(_userTokens[to] == 0, "User already has a reputation token");
+
         _currentTokenId++;
         uint256 newTokenId = _currentTokenId;
         _mint(to, newTokenId, 1, "");
         _reputationScores[newTokenId] = 0; // Initialize reputation score to 0
+        _userTokens[to] = newTokenId;
+
         return newTokenId;
     }
 
@@ -32,6 +37,14 @@ contract ReputationToken is ERC1155, Auth {
     function getReputationScore(uint256 tokenId) public view returns (uint256) {
         require(_exists(tokenId), "Token does not exist");
         return _reputationScores[tokenId];
+    }
+
+    function getUserToken(address user) public view returns (uint256) {
+        return _userTokens[user];
+    }
+
+    function hasReputationToken(address user) public view returns (bool) {
+        return _userTokens[user] != 0;
     }
 
     function _exists(uint256 tokenId) internal view returns (bool) {

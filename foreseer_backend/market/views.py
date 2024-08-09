@@ -6,9 +6,22 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from market.private import create_market, get_market_by_id
+from market.private import create_market, get_market_by_id, get_market_reputation
 
 # Create your views here.
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class MarketReputationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+
+        reputatuon = get_market_reputation(**data)
+
+        if not reputatuon:
+            return JsonResponse({"success": False, "error": "Failed to create market"})
+
+        return JsonResponse({"success": True, "data": reputatuon})
 
 
 @method_decorator(csrf_exempt, name="dispatch")

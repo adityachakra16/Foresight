@@ -11,6 +11,10 @@ def create_market(**market):
     return market
 
 
+def get_market_reputation(**market):
+    return 10
+
+
 def get_all_markets():
     return Market.objects.all()
 

@@ -7,4 +7,9 @@ urlpatterns = [
         views.MarketView.as_view(),
         name="market",
     ),
+    path(
+        "api/market/reputation",
+        views.MarketReputationView.as_view(),
+        name="market_reputation",
+    ),
 ]

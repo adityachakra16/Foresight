@@ -8,7 +8,6 @@ import { IdentityVerification } from "../VerficationModal";
 const { Heading, Text } = Typography;
 
 export const CreateMarket = () => {
-  const router = useRouter();
   const { currentUser } = useForesightUser();
 
   return (
@@ -25,12 +24,12 @@ export const CreateMarket = () => {
           Markets on Foresight can be created by any verified user.
         </Text>
       </Flex>{" "}
-      <CreateMarketForm />
-      {/* {currentUser?.isVerified ? (
+      {/* <CreateMarketForm /> */}
+      {currentUser?.isVerified ? (
         <CreateMarketForm />
       ) : (
         <IdentityVerification />
-      )} */}
+      )}
     </Flex>
   );
 };

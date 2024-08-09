@@ -21,6 +21,6 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/ui/CreateMarket"
-  ],
+, "src/components/ui/Market"  ],
   "exclude": ["node_modules"]
 }

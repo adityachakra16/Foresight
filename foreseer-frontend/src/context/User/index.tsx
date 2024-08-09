@@ -79,7 +79,7 @@ export function useProviderUserContext() {
     if (currentUser?.ethAddress) {
       void (async () => {
         await refreshMarkets();
-        await refreshTrades();
+        // await refreshTrades();
         await refreshPositions();
       })();
     }

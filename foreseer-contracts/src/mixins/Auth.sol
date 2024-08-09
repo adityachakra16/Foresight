@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity <0.9.0;
 
-import { IAuth } from "../interfaces/IAuth.sol";
+import {IAuth} from "../interfaces/IAuth.sol";
 
 /// @title Auth
 /// @notice Provides admin and operator roles and access control modifiers
@@ -12,6 +12,8 @@ abstract contract Auth is IAuth {
     /// @dev The set of addresses authorized as Operators
     mapping(address => uint256) public operators;
 
+    mapping(address => uint256) public reputationOracle;
+
     modifier onlyAdmin() {
         if (admins[msg.sender] != 1) revert NotAdmin();
         _;
@@ -19,6 +21,11 @@ abstract contract Auth is IAuth {
 
     modifier onlyOperator() {
         if (operators[msg.sender] != 1) revert NotOperator();
+        _;
+    }
+
+    modifier onlyReputationOracle() {
+        if (reputationOracle[msg.sender] != 1) revert NotReputationOracle();
         _;
     }
 
@@ -33,6 +40,10 @@ abstract contract Auth is IAuth {
 
     function isOperator(address usr) external view returns (bool) {
         return operators[usr] == 1;
+    }
+
+    function isReputationOracle(address usr) external view returns (bool) {
+        return reputationOracle[usr] == 1;
     }
 
     /// @notice Adds a new admin
@@ -51,6 +62,14 @@ abstract contract Auth is IAuth {
         emit NewOperator(operator_, msg.sender);
     }
 
+    /// @notice Adds a new reputation oracle
+    /// Can only be called by a current admin
+    /// @param reputationOracle_ - The new reputation oracle
+    function addReputationOracle(address reputationOracle_) external onlyAdmin {
+        reputationOracle[reputationOracle_] = 1;
+        emit NewReputationOracle(reputationOracle_, msg.sender);
+    }
+
     /// @notice Removes an existing Admin
     /// Can only be called by a current admin
     /// @param admin - The admin to be removed
@@ -67,6 +86,14 @@ abstract contract Auth is IAuth {
         emit RemovedOperator(operator, msg.sender);
     }
 
+    /// @notice Removes an existing reputation oracle
+    /// Can only be called by a current admin
+    /// @param reputationOracle_ - The reputation oracle to be removed
+    function removeReputationOracle(address reputationOracle_) external onlyAdmin {
+        reputationOracle[reputationOracle_] = 0;
+        emit RemovedReputationOracle(reputationOracle_, msg.sender);
+    }
+
     /// @notice Removes the admin role for the caller
     /// Can only be called by an existing admin
     function renounceAdminRole() external onlyAdmin {
@@ -79,5 +106,12 @@ abstract contract Auth is IAuth {
     function renounceOperatorRole() external onlyOperator {
         operators[msg.sender] = 0;
         emit RemovedOperator(msg.sender, msg.sender);
+    }
+
+    /// @notice Removes the reputation oracle role for the caller
+    /// Can only be called by an exiting reputation oracle
+    function renounceReputationOracleRole() external onlyReputationOracle {
+        reputationOracle[msg.sender] = 0;
+        emit RemovedReputationOracle(msg.sender, msg.sender);
     }
 }

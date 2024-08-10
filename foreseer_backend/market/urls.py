@@ -3,6 +3,11 @@ from market import views
 
 urlpatterns = [
     path(
+        "api/markets",
+        views.MarketView.as_view(),
+        name="market",
+    ),
+    path(
         "api/market",
         views.MarketView.as_view(),
         name="market",

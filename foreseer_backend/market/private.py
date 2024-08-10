@@ -1,11 +1,19 @@
+import datetime
 from market.models import Market
+from django.utils import timezone
+from datetime import datetime
+from django.utils import timezone
 
 
 def create_market(**market):
+    print(market)
+    seconds = market["expiration"] / 1000
+    dt = datetime.fromtimestamp(seconds)
+
     market = Market.objects.create(
         name=market["name"],
-        rules=market["rules"],
-        expiration=market["expiration"],
+        rules=market["description"],
+        expiration=dt,
     )
 
     return market

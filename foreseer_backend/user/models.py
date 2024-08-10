@@ -8,5 +8,6 @@ from django.contrib.auth.models import AbstractUser
 class UserDetails(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ethAddress = models.CharField(max_length=100)
-    markets_created = models.JSONField()
-    markets_participated = models.JSONField()
+    markets_created = models.JSONField(blank=True, null=True)
+    markets_participated = models.JSONField(blank=True, null=True)
+    is_verified = models.BooleanField(default=False)

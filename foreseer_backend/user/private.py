@@ -148,5 +148,5 @@ def get_user_details(email):
         "ethAddress": user_details.ethAddress,
         "markets_created": user_details.markets_created,
         "markets_participated": user_details.markets_participated,
-        "verified": user,
+        "is_verified": user_details.is_verified,
     }

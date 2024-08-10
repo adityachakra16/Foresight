@@ -20,22 +20,18 @@ export const createVerifiedUser = async (
 };
 
 export const fetchUserProfile = async (user: UseUserResult) => {
-  // const res = await sendRequest(`/user/me`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  // });
+  const res = await sendRequest(`/user?email=${user?.email}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-  const res = {
-    ethAddress: user?.address,
-    email: user?.email,
-    id: user?.userId,
-    isVerified: false,
-    portfolioValue: 10,
-  };
+  if (res.success) {
+    return res.data;
+  }
 
-  return res;
+  return false;
 };
 
 export const fetchUserPositions = async () => {

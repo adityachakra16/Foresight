@@ -15,6 +15,8 @@ import { CreateMarketDto } from "@/dtos";
 import { FaShare } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { MarketReputation } from "./MarketReputation";
+import { createMarket } from "@/services/Market";
+import { useForesightUser } from "@/context/User";
 const { Text, Heading } = Typography;
 
 interface CreateMarketFormProps {}
@@ -154,6 +156,7 @@ interface CreateMarketFormProps {}
 
 export const CreateMarketForm = ({}: CreateMarketFormProps) => {
   const router = useRouter();
+  const { currentUser } = useForesightUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [expiration, setExpiration] = useState<Date | null>(null);
@@ -162,14 +165,17 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
   const [priceFeedAddress, setPriceFeedAddress] = useState("");
   const [createdMarket, setCreatedMarket] = useState<MarketType | null>(null);
   const {
-    createMarket,
+    createMarket: publishMarket,
     sendUserOperationResult,
     isSendingUserOperation,
     isSendUserOperationError,
+    addLiquidty,
+    insufficientBalance,
   } = useContractActions();
+  const [tokenApprovalRequired, setTokenApprovalRequired] = useState(false);
+  const [fundingRequired, setFundingRequired] = useState(false);
 
   const [liquidity, setLiquidity] = useState("");
-  const [createdLiquidty, setCreatedLiquidty] = useState(false);
   const [formStage, setFormStage] = useState<
     "form" | "liquidity" | "completed"
   >("form");
@@ -177,23 +183,50 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
   useEffect(() => {
     console.log({
       sendUserOperationResult,
-      createdMarket,
-      createdLiquidty,
     });
-    if (sendUserOperationResult && createdMarket && !createdLiquidty) {
+    if (sendUserOperationResult && formStage === "form") {
       setFormStage("liquidity");
-    } else if (sendUserOperationResult && createdLiquidty) {
+    } else if (sendUserOperationResult && formStage === "liquidity") {
       setFormStage("completed");
     } else {
       setFormStage("form");
     }
-  }, [createdMarket, createdLiquidty, sendUserOperationResult]);
+  }, [sendUserOperationResult]);
+
+  useEffect(() => {
+    setCreatedMarket({
+      id: 7,
+      name: "Will CPI inflation cross 4% in 2024?",
+      description:
+        "Add description about the market, when its going to resolve and details about the resolution...",
+      expiration: "2024-12-31T00:00:00.000Z",
+      totalAmount: 0,
+    });
+    setFormStage("liquidity");
+  }, []);
 
   return (
-    <>
+    <Flex
+      gap="large"
+      vertical
+      style={{
+        width: "100%",
+      }}
+    >
       {formStage === "form" && (
-        <Flex gap="large">
-          <Flex vertical gap="large">
+        <Flex
+          gap="large"
+          style={{
+            width: "100%",
+          }}
+        >
+          <Flex
+            vertical
+            gap="large"
+            style={{
+              width: "100%",
+            }}
+          >
             <Flex vertical>
               <Flex gap="small" vertical>
                 <Text
@@ -316,6 +349,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
                   selectedDate={expiration}
                   onChange={(date) => setExpiration(date)}
                   placeholder="Select a date..."
+                  showTimeSelect
                 />
               </Flex>
             </Flex>
@@ -328,16 +362,22 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
                 style={{
                   width: "100%",
                 }}
-                onClick={() => {
+                onClick={async () => {
                   console.log("Create Market");
-                  createMarket({
-                    name,
-                    description,
-                    expiration: expiration?.toString() || "",
-                    resolutionOracleFeedType,
-                    websiteUrl,
-                    priceFeedAddress,
-                  });
+                  try {
+                    const market = await createMarket({
+                      name,
+                      description,
+                      expiration: expiration?.getTime() || 0,
+                      resolutionOracleFeedType,
+                      websiteUrl,
+                      priceFeedAddress,
+                    });
+                    setCreatedMarket(market);
+                    publishMarket(market);
+                  } catch (e) {
+                    console.error(e);
+                  }
                 }}
                 loading={isSendingUserOperation}
               >
@@ -349,7 +389,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
             market={{
               name,
               description,
-              expiration: expiration?.toString() || "",
+              expiration: expiration?.getTime() || 0,
               resolutionOracleFeedType,
               websiteUrl,
               priceFeedAddress,
@@ -378,17 +418,25 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
               value={liquidity}
               onChange={(e) => setLiquidity(e.target.value)}
               endcomponent={<Text>USDC</Text>}
+              onBlur={async () => {
+                const fundingRequired = await insufficientBalance(
+                  parseInt(liquidity),
+                  currentUser?.ethAddress || ""
+                );
+                setFundingRequired(fundingRequired);
+              }}
             />
             <Button
               style={{
                 width: "100%",
               }}
               onClick={() => {
-                console.log("Add Liquidity");
+                addLiquidty(createdMarket?.id || 0, parseInt(liquidity));
               }}
               loading={isSendingUserOperation}
+              disabled={fundingRequired}
             >
-              Add Liquidity
+              {fundingRequired ? "Insufficient Balance" : "Add Liquidity"}
             </Button>
           </Flex>
         </Flex>
@@ -427,6 +475,6 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
           </Flex>
         </Flex>
       )}
-    </>
+    </Flex>
   );
 };

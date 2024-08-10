@@ -35,7 +35,7 @@ interface OrderbookType {
 }
 
 interface MarketType {
-  id: string;
+  id: number;
   name: string;
   description: string;
   totalAmount: number;

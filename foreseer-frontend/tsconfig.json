@@ -20,7 +20,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/components/ui/CreateMarket"
-, "src/components/ui/Market"  ],
+    "src/components/ui/CreateMarket",
+    "src/components/ui/Market",
+    "src/services/Market"
+  ],
   "exclude": ["node_modules"]
 }

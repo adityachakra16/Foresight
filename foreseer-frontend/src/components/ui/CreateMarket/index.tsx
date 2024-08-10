@@ -15,21 +15,27 @@ export const CreateMarket = () => {
       gap="large"
       vertical
       style={{
-        width: "60%",
+        width: "100%",
       }}
     >
-      <Flex gap={0.2} vertical>
+      <Flex
+        gap={0.2}
+        vertical
+        style={{
+          width: "100%",
+        }}
+      >
         <Heading level={3}>Create Market</Heading>
         <Text style={{ color: "gray" }}>
           Markets on Foresight can be created by any verified user.
         </Text>
-      </Flex>{" "}
-      {/* <CreateMarketForm /> */}
-      {currentUser?.isVerified ? (
+      </Flex>
+      <CreateMarketForm />
+      {/* {currentUser?.isVerified ? (
         <CreateMarketForm />
       ) : (
         <IdentityVerification />
-      )}
+      )} */}
     </Flex>
   );
 };

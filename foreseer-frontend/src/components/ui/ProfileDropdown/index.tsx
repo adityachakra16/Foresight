@@ -22,7 +22,7 @@ export const ProfileDropdown = ({
   loginButtonType,
 }: ProfileDropdownInterface) => {
   const router = useRouter();
-  const { setLoginModalOpen, currentUser } = useForesightUser();
+  const { setLoginModalOpen, currentUser, logoutUser } = useForesightUser();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const ProfileDropdownOptions = [
@@ -45,6 +45,7 @@ export const ProfileDropdown = ({
       label: "Logout",
       onClick: () => {
         setProfileDropdownOpen(false);
+        logoutUser();
       },
     },
   ];
@@ -60,7 +61,7 @@ export const ProfileDropdown = ({
 
   return (
     <Flex align="center">
-      {currentUser?.id ? (
+      {currentUser?.email ? (
         <Flex align="center">
           <Flex gap="small" align="center">
             <Button type="transparent" icon={<PiSuitcaseSimpleLight />}>

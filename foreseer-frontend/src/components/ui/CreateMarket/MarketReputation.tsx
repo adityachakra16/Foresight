@@ -11,7 +11,11 @@ interface MarketReputationProps {
 
 export const MarketReputation = ({ market }: MarketReputationProps) => {
   return (
-    <Card>
+    <Card
+      style={{
+        width: "40%",
+      }}
+    >
       <Flex vertical>
         <Text
           style={{

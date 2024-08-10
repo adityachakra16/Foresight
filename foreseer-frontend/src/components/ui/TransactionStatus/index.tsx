@@ -22,7 +22,7 @@ export const TransactionStatus = ({
   if (sendUserOperationResult) {
     return (
       <a
-        href={`${chain.blockExplorers?.default.url}/tx/${sendUserOperationResult.hash}`}
+        href={`https://base-sepolia.blockscout.com/tx/${sendUserOperationResult.hash}`}
         target="_blank"
         rel="noopener noreferrer"
         className="text-center text-[#363FF9] hover:underline dark:text-white"

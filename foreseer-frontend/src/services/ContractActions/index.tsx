@@ -12,6 +12,9 @@ import { encodeFunctionData } from "viem";
 import { CreateMarketDto } from "@/dtos";
 import { numberToBytes32 } from "@/utils";
 import conditionalToken from "@/abis/ConditionalToken.json";
+import marketMakerFactory from "@/abis/MarketMakerFactory.json";
+import erc20 from "@/abis/ERC20.json";
+import { parseUnits, formatUnits } from "ethers";
 
 export const useContractActions = () => {
   const { client } = useSmartAccountClient({
@@ -27,7 +30,7 @@ export const useContractActions = () => {
     error: isSendUserOperationError,
   } = useSendUserOperation({ client, waitForTxn: true });
 
-  const createMarket = async (market: CreateMarketDto) => {
+  const createMarket = async (market: MarketType) => {
     if (!client) {
       console.log("Client is undefined");
       return;
@@ -36,27 +39,129 @@ export const useContractActions = () => {
       abi: conditionalToken.abi,
       functionName: "prepareCondition",
       args: [
-        "0xf4D70D2fd1DE59ff34aA0350263ba742cb94b1c8",
-        numberToBytes32(123),
+        process.env.NEXT_PUBLIC_MARKET_RESOLVER_ADDRESS,
+        numberToBytes32(market.id),
         2,
       ],
     });
 
     const uo = await sendUserOperation({
       uo: {
-        target: "0x910D34cF7Af63Aa72378DED2E4B947cbd2AEBC01",
+        target: process.env.NEXT_PUBLIC_CONDITIONAL_TOKEN_ADDRESS as "0x",
         data: data,
       },
     });
   };
 
-  const addLiquidty = async (marketId: string, amount: number) => {};
+  const insufficientBalance = async (funding: number) => {
+    if (!client) {
+      console.log("Client is undefined");
+      return false;
+    }
+    const ethAddress = client.getAddress();
+    console.log({ ethAddress });
+    const balance = await client.readContract({
+      abi: erc20.abi,
+      address: process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS as "0x",
+      functionName: "balanceOf",
+      args: [ethAddress],
+    });
+
+    const fundingBigInt = parseUnits(funding.toString(), 6);
+
+    console.log({ balance, ethAddress });
+    if (balance < fundingBigInt) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const addLiquidty = async (marketId: number, funding: number) => {
+    if (!client) {
+      console.log("Client is undefined");
+      return false;
+    }
+
+    const conditionId = await client.readContract({
+      abi: conditionalToken.abi,
+      address: process.env.NEXT_PUBLIC_CONDITIONAL_TOKEN_ADDRESS as "0x",
+      functionName: "getConditionId",
+      args: [
+        process.env.NEXT_PUBLIC_MARKET_RESOLVER_ADDRESS,
+        numberToBytes32(marketId),
+        2,
+      ],
+    });
+
+    const fundingBigInt = parseUnits(funding.toString(), 6);
+
+    const approvalData = encodeFunctionData({
+      abi: erc20.abi,
+      functionName: "approve",
+      args: [
+        process.env.NEXT_PUBLIC_AMM_FACTORY_ADDRESS,
+        /// Max Uint256
+        BigInt(
+          "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        ),
+      ],
+    });
+
+    console.log({ fundingBigInt });
+
+    const data = encodeFunctionData({
+      abi: marketMakerFactory.abi,
+      functionName: "createLMSRMarketMaker",
+      args: [
+        process.env.NEXT_PUBLIC_CONDITIONAL_TOKEN_ADDRESS,
+        process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS,
+        [conditionId],
+        0,
+        "0x0000000000000000000000000000000000000000",
+        fundingBigInt,
+      ],
+    });
+
+    console.log({ data });
+
+    const uo = await sendUserOperation({
+      uo: [
+        {
+          target: process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS as "0x",
+          data: approvalData,
+        },
+        {
+          target: process.env.NEXT_PUBLIC_AMM_FACTORY_ADDRESS as "0x",
+          data: data,
+        },
+      ],
+    });
+  };
 
   const buyShares = async (
-    marketId: string,
-    outcomeId: string,
-    amount: number
-  ) => {};
+    marketId: number,
+    tokenAmounts: number[],
+    from: string
+  ) => {
+    if (!client) {
+      console.log("Client is undefined");
+      return;
+    }
+
+    const ammAddress = "0x";
+    const cost = 0;
+    const uo = await sendUserOperation({
+      uo: {
+        target: ammAddress as "0x",
+        data: encodeFunctionData({
+          abi: marketMakerFactory.abi,
+          functionName: "trade",
+          args: [tokenAmounts, cost, from],
+        }),
+      },
+    });
+  };
 
   const sellShares = async (
     marketId: string,
@@ -72,5 +177,7 @@ export const useContractActions = () => {
     sendUserOperationResult,
     isSendingUserOperation,
     isSendUserOperationError,
+
+    insufficientBalance,
   };
 };

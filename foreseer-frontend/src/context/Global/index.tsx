@@ -1,4 +1,4 @@
-import { fetchPublicMarkets } from "@/services/Market.tsx";
+import { fetchPublicMarkets } from "@/services/Market";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface GlobalContextType {

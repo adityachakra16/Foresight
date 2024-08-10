@@ -24,6 +24,7 @@ interface UserContextType {
   userCreatedMarkets: MarketType[];
   userTrades: TradesType[];
   handleLogout: () => void;
+  logoutUser: () => void;
 }
 
 export const UserContext = createContext<UserContextType>(
@@ -48,8 +49,15 @@ export function useProviderUserContext() {
   const refreshUserProfile = async () => {
     setLoadingUser(true);
     const u = await fetchUserProfile(user);
+    console.log({ u });
     if (!u) {
-      setCurrentUser(null);
+      setCurrentUser({
+        ethAddress: user?.address || "",
+        email: user?.address || "",
+        id: user?.userId || "",
+        isVerified: false,
+        portfolioValue: 0,
+      });
       setLoadingUser(false);
       return;
     }
@@ -98,6 +106,11 @@ export function useProviderUserContext() {
     setCurrentUser(null);
   };
 
+  const logoutUser = () => {
+    setCurrentUser(null);
+    logout();
+  };
+
   return {
     currentUser,
     setCurrentUser,
@@ -109,6 +122,7 @@ export function useProviderUserContext() {
     userCreatedMarkets,
     userTrades,
     handleLogout,
+    logoutUser,
   };
 }
 

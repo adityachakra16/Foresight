@@ -1,4 +1,4 @@
-import { fetchMarket, fetchPublicMarkets } from "@/services/Market.tsx";
+import { fetchMarket, fetchPublicMarkets } from "@/services/Market";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useForesightUser } from "../User";

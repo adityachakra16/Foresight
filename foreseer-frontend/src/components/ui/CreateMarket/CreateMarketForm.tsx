@@ -193,17 +193,17 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
     }
   }, [sendUserOperationResult]);
 
-  useEffect(() => {
-    setCreatedMarket({
-      id: 7,
-      name: "Will CPI inflation cross 4% in 2024?",
-      description:
-        "Add description about the market, when its going to resolve and details about the resolution...",
-      expiration: "2024-12-31T00:00:00.000Z",
-      totalAmount: 0,
-    });
-    setFormStage("liquidity");
-  }, []);
+  // useEffect(() => {
+  //   setCreatedMarket({
+  //     id: 7,
+  //     name: "Will CPI inflation cross 4% in 2024?",
+  //     description:
+  //       "Add description about the market, when its going to resolve and details about the resolution...",
+  //     expiration: "2024-12-31T00:00:00.000Z",
+  //     totalAmount: 0,
+  //   });
+  //   setFormStage("liquidity");
+  // }, []);
 
   return (
     <Flex

@@ -58,8 +58,12 @@ export const useContractActions = () => {
       console.log("Client is undefined");
       return false;
     }
+    if (!funding) {
+      return true;
+    }
+
     const ethAddress = client.getAddress();
-    console.log({ ethAddress });
+    console.log({ ethAddress, funding });
     const balance = await client.readContract({
       abi: erc20.abi,
       address: process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS as "0x",
@@ -70,7 +74,7 @@ export const useContractActions = () => {
     const fundingBigInt = parseUnits(funding.toString(), 6);
 
     console.log({ balance, ethAddress });
-    if (balance < fundingBigInt) {
+    if ((balance as bigint) < fundingBigInt) {
       return true;
     }
 

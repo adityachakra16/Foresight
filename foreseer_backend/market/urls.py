@@ -4,7 +4,7 @@ from market import views
 urlpatterns = [
     path(
         "api/markets",
-        views.MarketView.as_view(),
+        views.get_markets,
         name="market",
     ),
     path(

@@ -201,7 +201,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
   //     expiration: "2024-12-31T00:00:00.000Z",
   //     totalAmount: 0,
   //   });
-  //   setFormStage("liquidity");
+  //   setFormStage("completed");
   // }, []);
 
   return (
@@ -380,7 +380,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
                   }
                 }}
                 loading={isSendingUserOperation}
-                disabled={currentReputationScore < 0}
+                // disabled={currentReputationScore < 0}
               >
                 Create Market
               </Button>
@@ -401,8 +401,14 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
         </Flex>
       )}
       {formStage === "liquidity" && (
-        <Flex vertical gap="large">
-          <Flex gap="small" vertical>
+        <Flex
+          vertical
+          gap="large"
+          style={{
+            width: "60%",
+          }}
+        >
+          <Flex gap="small" align="center">
             <Heading level={6}>Market created successfully!</Heading>
 
             <TransactionStatus
@@ -444,36 +450,45 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
         </Flex>
       )}
       {formStage === "completed" && (
-        <Flex vertical gap="large">
-          <Flex gap="small" vertical>
-            <Heading level={6}>Market is live and liquid!</Heading>
+        <Flex
+          vertical
+          gap="large"
+          style={{
+            width: "60%",
+          }}
+        >
+          <Flex gap="large" vertical>
+            <Flex gap="small" align="center">
+              <Heading level={5}>Market is live and liquid!</Heading>
 
-            <TransactionStatus
-              sendUserOperationResult={sendUserOperationResult}
-              isSendingUserOperation={isSendingUserOperation}
-              isSendUserOperationError={isSendUserOperationError}
-            />
-
-            <Button
-              style={{
-                width: "100%",
-              }}
-              onClick={() => {}}
-              icon={<FaShare />}
-              type="transparent"
-            >
-              Share Market
-            </Button>
-            <Button
-              style={{
-                width: "100%",
-              }}
-              onClick={() => {
-                createdMarket && router.push(`/markets/${createdMarket.id}`);
-              }}
-            >
-              Go to Market
-            </Button>
+              <TransactionStatus
+                sendUserOperationResult={sendUserOperationResult}
+                isSendingUserOperation={isSendingUserOperation}
+                isSendUserOperationError={isSendUserOperationError}
+              />
+            </Flex>
+            <Flex gap="small">
+              <Button
+                style={{
+                  width: "100%",
+                }}
+                onClick={() => {}}
+                icon={<FaShare />}
+                type="transparent"
+              >
+                Share Market
+              </Button>
+              <Button
+                style={{
+                  width: "100%",
+                }}
+                onClick={() => {
+                  createdMarket && router.push(`/markets/${createdMarket.id}`);
+                }}
+              >
+                Go to Market
+              </Button>
+            </Flex>
           </Flex>
         </Flex>
       )}

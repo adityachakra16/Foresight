@@ -61,7 +61,6 @@ export const Market = () => {
   >();
 
   useEffect(() => {
-    return;
     void (async () => {
       console.log({ market, address });
 
@@ -156,59 +155,60 @@ export const Market = () => {
             </Flex>
           </Flex>
         </Flex>
-        {positions && positions?.length > 0 && (
-          <Flex vertical gap="small">
-            <Heading level={5}>Positions</Heading>
-            <Card style={{ width: "100%" }}>
-              <Flex
-                justify="space-between"
-                style={{
-                  borderBottom: "1px solid #e8e9e738",
-                  padding: "0.5rem 0",
-                }}
-              >
-                <Text>Outcome</Text>
-                <Text>Shares</Text>
-              </Flex>
-              {positions?.map((position, index) => {
-                if (position.shares > 0)
-                  return (
-                    <Flex
-                      key={index}
-                      gap="small"
-                      style={{
-                        padding: "0.5rem 0",
-                      }}
-                      justify="space-between"
-                    >
-                      <Tag
+        {positions &&
+          positions?.filter((position) => position.shares > 0)?.length > 0 && (
+            <Flex vertical gap="small">
+              <Heading level={5}>Positions</Heading>
+              <Card style={{ width: "100%" }}>
+                <Flex
+                  justify="space-between"
+                  style={{
+                    borderBottom: "1px solid #e8e9e738",
+                    padding: "0.5rem 0",
+                  }}
+                >
+                  <Text>Outcome</Text>
+                  <Text>Shares</Text>
+                </Flex>
+                {positions?.map((position, index) => {
+                  if (position.shares > 0)
+                    return (
+                      <Flex
+                        key={index}
+                        gap="small"
                         style={{
-                          backgroundColor:
-                            position.outcome === "yes"
-                              ? "rgba(23, 188, 131, 0.1)"
-                              : "rgba(255, 99, 132, 0.1)",
-                          border:
-                            position.outcome === "yes"
-                              ? " 1px solid #0c5e41"
-                              : "1px solid #58212d",
+                          padding: "0.5rem 0",
                         }}
+                        justify="space-between"
                       >
-                        {position.outcome}
-                      </Tag>
-                      <Text>{position.shares}</Text>
-                      {position.currentValue && (
-                        <Text>{position.currentValue}</Text>
-                      )}
-                    </Flex>
-                  );
-              })}
-            </Card>
-          </Flex>
-        )}
+                        <Tag
+                          style={{
+                            backgroundColor:
+                              position.outcome === "yes"
+                                ? "rgba(23, 188, 131, 0.1)"
+                                : "rgba(255, 99, 132, 0.1)",
+                            border:
+                              position.outcome === "yes"
+                                ? " 1px solid #0c5e41"
+                                : "1px solid #58212d",
+                          }}
+                        >
+                          {position.outcome}
+                        </Tag>
+                        <Text>{position.shares}</Text>
+                        {position.currentValue && (
+                          <Text>{position.currentValue}</Text>
+                        )}
+                      </Flex>
+                    );
+                })}
+              </Card>
+            </Flex>
+          )}
         <Flex vertical gap="small">
           <Heading level={5}>Rules</Heading>
 
-          <Text>{market?.description || "Market description"}</Text>
+          <Text>{market?.rules || "Market description"}</Text>
         </Flex>
       </Flex>
       <Flex style={{ width: "40%" }} vertical gap="small">

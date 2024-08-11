@@ -63,14 +63,12 @@ export const ProfileDropdown = ({
     <Flex align="center">
       {currentUser?.email ? (
         <Flex align="center">
-          <Flex gap="small" align="center">
-            <Button type="transparent" icon={<PiSuitcaseSimpleLight />}>
-              <Text>{currentUser?.portfolioValue || 0.0}</Text>
-            </Button>
+          {/* <Flex gap="small" align="center">
+     
             <Button type="transparent" icon={<BsCashStack />}>
               <Text>{currentUser?.portfolioValue || 0.0}</Text>
             </Button>
-          </Flex>
+          </Flex> */}
           <Popover
             isOpen={profileDropdownOpen}
             setIsOpen={setProfileDropdownOpen}

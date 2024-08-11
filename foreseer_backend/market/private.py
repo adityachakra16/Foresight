@@ -1,12 +1,16 @@
 import datetime
+import json
 from django.conf import settings
 
 from web3 import Web3
+from market import constants
 from market.models import Market
 from django.utils import timezone
 from datetime import datetime
 from django.utils import timezone
 from market.abis.condiitonal_token import conditional_token_abi
+
+import openai
 
 import environ
 
@@ -30,7 +34,29 @@ def create_market(**market):
 
 
 def get_market_reputation(**market):
-    return 10
+    client = openai.OpenAI(api_key=env("OPENAI_API_KEY"))
+
+    name = market["name"]
+    rules = market["description"]
+
+    instructions = constants.AGENT_INSTRUCTIONS
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_format={"type": "json_object"},
+        temperature=0.2,
+        top_p=0.1,
+        messages=[
+            {"role": "system", "content": instructions},
+            {"role": "user", "content": json.dumps({"name": name, "rules": rules})},
+        ],
+    )
+
+    print(completion)
+    content = completion.choices[0].message.content
+    print(content)
+    content = json.loads(content)
+
+    return content["score"]
 
 
 def get_all_markets():

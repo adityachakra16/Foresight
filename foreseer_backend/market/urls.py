@@ -17,7 +17,7 @@ urlpatterns = [
         views.get_cost,
         name="market_costs",
     ),
-    path("api/markets/margin", views.get_marginal_price, name="market_marginal"),
+    path("api/markets/margin", views.get_marginal_cost, name="market_marginal"),
     path(
         "api/market",
         views.MarketView.as_view(),

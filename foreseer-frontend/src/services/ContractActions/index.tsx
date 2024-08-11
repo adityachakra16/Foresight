@@ -16,8 +16,10 @@ import marketMakerFactory from "@/abis/MarketMakerFactory.json";
 import marketMaker from "@/abis/MarketMaker.json";
 import erc20 from "@/abis/ERC20.json";
 import { parseUnits, formatUnits } from "ethers";
+import { useState, useEffect } from "react";
 
 export const useContractActions = () => {
+  const [address, setAddress] = useState<string | undefined>(undefined);
   const { client } = useSmartAccountClient({
     type: accountType,
     gasManagerConfig,
@@ -30,6 +32,12 @@ export const useContractActions = () => {
     isSendingUserOperation,
     error: isSendUserOperationError,
   } = useSendUserOperation({ client, waitForTxn: true });
+
+  useEffect(() => {
+    if (client) {
+      setAddress(client.getAddress());
+    }
+  }, [client]);
 
   const createMarket = async (market: MarketType) => {
     if (!client) {
@@ -195,6 +203,47 @@ export const useContractActions = () => {
     cost: number
   ) => {};
 
+  const redeemShares = async (market: MarketType) => {
+    if (!client) {
+      console.log("Client is undefined");
+      return;
+    }
+
+    const conditionId = await client.readContract({
+      abi: conditionalToken.abi,
+      address: process.env.NEXT_PUBLIC_CONDITIONAL_TOKEN_ADDRESS as "0x",
+      functionName: "getConditionId",
+      args: [
+        process.env.NEXT_PUBLIC_MARKET_RESOLVER_ADDRESS,
+        numberToBytes32(market.id),
+        2,
+      ],
+    });
+
+    console.log({ conditionId });
+
+    const indexSet = [1, parseInt(Math.pow(10, 1).toString(), 2)];
+
+    const data = encodeFunctionData({
+      abi: conditionalToken.abi,
+      functionName: "redeemPositions",
+      args: [
+        process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS,
+        `0x${"0".repeat(64)}`,
+        conditionId,
+        indexSet,
+      ],
+    });
+
+    const uo = await sendUserOperation({
+      uo: [
+        {
+          target: process.env.NEXT_PUBLIC_CONDITIONAL_TOKEN_ADDRESS as "0x",
+          data,
+        },
+      ],
+    });
+  };
   return {
     createMarket,
     addLiquidty,
@@ -203,7 +252,8 @@ export const useContractActions = () => {
     sendUserOperationResult,
     isSendingUserOperation,
     isSendUserOperationError,
-
+    redeemShares,
     insufficientBalance,
+    address,
   };
 };

@@ -54,12 +54,12 @@ export function useProviderMarketContext() {
           setLiquidity(liquidity[slug as string]);
         }
 
-        const marginalPrice = await fetchMarketMarginalPrice([slug as string]);
+        const marginalPrice = await fetchMarketMarginalPrice(slug as string);
 
         if (marginalPrice) {
           const [yes, no] = [
-            marginalPrice[slug as string][0] / 10 ** 18,
-            marginalPrice[slug as string][1] / 10 ** 18,
+            marginalPrice[0] / 10 ** 18,
+            marginalPrice[1] / 10 ** 18,
           ];
           setMarginalPrice([yes, no]);
         }

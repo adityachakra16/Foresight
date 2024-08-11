@@ -37,9 +37,9 @@ class VerifiedUserView(View):
 
 def get_user_position(request):
     market_id = request.GET.get("market_id")
-    email = request.GET.get("email")
+    eth_address = request.GET.get("eth_address")
 
-    position = get_user_positions(email, market_id)
+    position = get_user_positions(eth_address, market_id)
 
     if not position:
         return JsonResponse({"success": False, "error": "User Position not found"})

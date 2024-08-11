@@ -35,47 +35,37 @@ export const fetchUserProfile = async (user: UseUserResult) => {
 };
 
 export const fetchUserPositions = async () => {
-  const res = await sendRequest(`/user/positions`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  // const res = await sendRequest(`/user/positions`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  // });
+  // if (res.success) {
+  //   return res.data;
+  // }
+  return false;
+};
+
+export const fetchUserPosition = async (
+  marketId: number,
+  ethAddress: `0x${string}`
+) => {
+  console.log({ marketId, ethAddress });
+  if (!marketId || !ethAddress) return false;
+  const res = await sendRequest(
+    `/user/positions?market_id=${marketId}&eth_address=${ethAddress}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   if (res.success) {
     return res.data;
   }
   return false;
-
-  // return [
-  //   {
-  //     market: {
-  //       name: "Will Bitcoin reach $100,000 by 2022?",
-  //       id: "6",
-  //       description: "Will Bitcoin reach $100,000 by 2022?",
-  //       totalAmount: 1000,
-  //       expiration: new Date().toISOString(),
-  //     },
-  //     shares: 100,
-  //     outcome: "yes" as "yes",
-  //     avgPrice: 100,
-  //     currentValue: 100,
-  //     returns: 10,
-  //   },
-  //   {
-  //     market: {
-  //       name: "Will Ethereum reach $10,000 by 2022?",
-  //       id: "6",
-  //       description: "Will Ethereum reach $10,000 by 2022?",
-  //       totalAmount: 1000,
-  //       expiration: new Date().toISOString(),
-  //     },
-  //     shares: 100,
-  //     outcome: "no" as "no",
-  //     avgPrice: 100,
-  //     currentValue: 100,
-  //     returns: -10,
-  //   },
-  // ];
 };
 
 export const fetchUserTrades = async () => {

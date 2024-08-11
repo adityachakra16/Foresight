@@ -87,6 +87,8 @@ def calculate_market_costs(market_id, outcome_index=0, shares=1, buy_sell="buy")
     else:
         outcome_token_amounts[int(outcome_index)] = -int(shares)
     try:
+        print(outcome_token_amounts)
+
         net_cost = contract.functions.calcNetCost(outcome_token_amounts).call()
 
         print({"net_cost": net_cost})
@@ -94,6 +96,15 @@ def calculate_market_costs(market_id, outcome_index=0, shares=1, buy_sell="buy")
     except Exception as e:
         print(f"Error calling calcNetCost: {e}")
         return None
+
+
+def calculate_costs_of_one_share(market_id, buy_sell="buy"):
+
+    print({"market_id": market_id, "buy_sell": buy_sell})
+    yes_cost = calculate_market_costs(market_id, 0, 1000000000000000000, buy_sell)
+    no_cost = calculate_market_costs(market_id, 1, 1000000000000000000, buy_sell)
+
+    return [yes_cost, no_cost]
 
 
 def calculate_market_marginal_price(market_id):

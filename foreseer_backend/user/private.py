@@ -153,15 +153,10 @@ def get_user_details(email):
     }
 
 
-def get_user_positions(email, market_id=None):
-    user = User.objects.filter(email=email).first()
-    if not user:
-        return None
-
-    user_details = UserDetails.objects.filter(user=user).first()
+def get_user_positions(eth_address, market_id=None):
     position = get_user_position_in_market(
         market_id,
-        user_details.ethAddress,
+        eth_address,
     )
 
     return position

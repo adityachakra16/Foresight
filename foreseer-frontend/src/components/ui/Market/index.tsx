@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { CiClock2 } from "react-icons/ci";
 import { FaBookmark, FaRegClock, FaShare } from "react-icons/fa";
 import { TransactionStatus } from "../TransactionStatus";
+import { fetchUserPosition } from "@/services/User";
 
 const { Heading, Text } = Typography;
 
@@ -47,18 +48,42 @@ export const Market = () => {
     sendUserOperationResult,
     isSendingUserOperation,
     isSendUserOperationError,
+    address,
+    redeemShares,
   } = useContractActions();
 
-  const [positions, setPositions] = useState<PositionType[]>();
+  const [positions, setPositions] = useState<
+    {
+      outcome: string;
+      shares: number;
+      currentValue?: number;
+    }[]
+  >();
 
   useEffect(() => {
-    const pos = userPositions.filter(
-      (position) => position.market.id === market?.id
-    );
-    if (pos) {
-      setPositions(pos);
-    }
-  }, [market, userPositions]);
+    return;
+    void (async () => {
+      console.log({ market, address });
+
+      if (market?.id && address) {
+        const positions = await fetchUserPosition(
+          market.id,
+          address as `0x${string}`
+        );
+        console.log({ positions });
+        setPositions([
+          {
+            outcome: "yes",
+            shares: positions[0] / 10 ** 18,
+          },
+          {
+            outcome: "no",
+            shares: positions[1] / 10 ** 18,
+          },
+        ]);
+      }
+    })();
+  }, [market, sendUserOperationResult, address]);
 
   return (
     <Flex style={{ width: "100%" }} gap="large">
@@ -144,48 +169,39 @@ export const Market = () => {
               >
                 <Text>Outcome</Text>
                 <Text>Shares</Text>
-                <Text>Avg Price</Text>
-                <Text>Current Value</Text>
-                <Text>Profit/Loss</Text>
               </Flex>
-              {positions?.map((position) => (
-                <Flex
-                  key={position.market.id}
-                  gap="small"
-                  style={{
-                    padding: "0.5rem 0",
-                  }}
-                  justify="space-between"
-                >
-                  <Tag
-                    style={{
-                      backgroundColor:
-                        position.outcome === "yes"
-                          ? "rgba(23, 188, 131, 0.1)"
-                          : "rgba(255, 99, 132, 0.1)",
-                      border:
-                        position.outcome === "yes"
-                          ? " 1px solid #0c5e41"
-                          : "1px solid #58212d",
-                    }}
-                  >
-                    {position.outcome}
-                  </Tag>
-                  <Text>{position.shares}</Text>
-                  <Text>{position.avgPrice}</Text>
-                  <Text>{position.currentValue}</Text>
-                  <Text
-                    style={{
-                      color:
-                        position.returns > 0
-                          ? "rgba(23, 188, 131)"
-                          : "rgba(255, 99, 132)",
-                    }}
-                  >
-                    {position.returns}%
-                  </Text>
-                </Flex>
-              ))}
+              {positions?.map((position, index) => {
+                if (position.shares > 0)
+                  return (
+                    <Flex
+                      key={index}
+                      gap="small"
+                      style={{
+                        padding: "0.5rem 0",
+                      }}
+                      justify="space-between"
+                    >
+                      <Tag
+                        style={{
+                          backgroundColor:
+                            position.outcome === "yes"
+                              ? "rgba(23, 188, 131, 0.1)"
+                              : "rgba(255, 99, 132, 0.1)",
+                          border:
+                            position.outcome === "yes"
+                              ? " 1px solid #0c5e41"
+                              : "1px solid #58212d",
+                        }}
+                      >
+                        {position.outcome}
+                      </Tag>
+                      <Text>{position.shares}</Text>
+                      {position.currentValue && (
+                        <Text>{position.currentValue}</Text>
+                      )}
+                    </Flex>
+                  );
+              })}
             </Card>
           </Flex>
         )}
@@ -262,66 +278,112 @@ export const Market = () => {
               />
             </Flex>
           </Flex>
-          <Flex
-            gap="small"
-            style={{ width: "100%", marginTop: "2.4rem" }}
-            vertical
-            align="center"
-          >
-            <Flex style={{ width: "100%" }} gap="small" justify="space-between">
-              <Text
-                style={{
-                  color: "grey",
-                }}
-              >
-                Cost
-              </Text>
-              <Text>${(cost / 10 ** 18).toFixed(2)}</Text>
-            </Flex>
-            <Button
-              style={{
-                width: "100%",
-              }}
-              type={selectedTab}
-              onClick={() => {
-                console.log({
-                  selectedTab,
-                  outcome,
-                  shares,
-                });
-                let tokenAmounts = [0, 0];
-                let signedShares = 0;
-                if (selectedTab === "buy") {
-                  signedShares = parseInt(shares);
-                }
-                if (selectedTab === "sell") {
-                  signedShares = -parseInt(shares);
-                }
-
-                if (outcome === "yes") {
-                  tokenAmounts = [signedShares, 0];
-                }
-                if (outcome === "no") {
-                  tokenAmounts = [0, signedShares];
-                }
-
-                if (selectedTab === "buy") {
-                  buyShares(market as MarketType, tokenAmounts, cost);
-                } else {
-                  sellShares(market as MarketType, tokenAmounts, cost);
-                }
-              }}
-              loading={isSendingUserOperation}
+          {market?.active && (
+            <Flex
+              gap="small"
+              style={{ width: "100%", marginTop: "2.4rem" }}
+              vertical
+              align="center"
             >
-              {selectedTab === "buy" ? "Buy" : "Sell"} Shares
-            </Button>
+              <Flex
+                style={{ width: "100%" }}
+                gap="small"
+                justify="space-between"
+              >
+                <Text
+                  style={{
+                    color: "grey",
+                  }}
+                >
+                  Cost
+                </Text>
+                <Text>${(cost / 10 ** 18).toFixed(2)}</Text>
+              </Flex>
+              <Button
+                style={{
+                  width: "100%",
+                }}
+                type={selectedTab}
+                onClick={() => {
+                  console.log({
+                    selectedTab,
+                    outcome,
+                    shares,
+                  });
+                  let tokenAmounts = [0, 0];
+                  let signedShares = 0;
+                  if (selectedTab === "buy") {
+                    signedShares = parseInt(shares);
+                  }
+                  if (selectedTab === "sell") {
+                    signedShares = -parseInt(shares);
+                  }
 
-            <TransactionStatus
-              sendUserOperationResult={sendUserOperationResult}
-              isSendingUserOperation={isSendingUserOperation}
-              isSendUserOperationError={isSendUserOperationError}
-            />
-          </Flex>
+                  if (outcome === "yes") {
+                    tokenAmounts = [signedShares, 0];
+                  }
+                  if (outcome === "no") {
+                    tokenAmounts = [0, signedShares];
+                  }
+
+                  if (selectedTab === "buy") {
+                    buyShares(market as MarketType, tokenAmounts, cost);
+                  } else {
+                    sellShares(market as MarketType, tokenAmounts, cost);
+                  }
+                }}
+                loading={isSendingUserOperation}
+              >
+                {selectedTab === "buy" ? "Buy" : "Sell"} Shares
+              </Button>
+
+              <TransactionStatus
+                sendUserOperationResult={sendUserOperationResult}
+                isSendingUserOperation={isSendingUserOperation}
+                isSendUserOperationError={isSendUserOperationError}
+              />
+            </Flex>
+          )}
+          {!market?.active && (
+            <Flex
+              gap="small"
+              style={{ width: "100%", marginTop: "2.4rem" }}
+              vertical
+              align="center"
+            >
+              <Flex
+                style={{ width: "100%" }}
+                gap="small"
+                justify="space-between"
+              >
+                <Text
+                  style={{
+                    color: "grey",
+                  }}
+                >
+                  Market has expired
+                </Text>
+              </Flex>
+              <Button
+                style={{
+                  width: "100%",
+                }}
+                type={selectedTab}
+                onClick={() => {
+                  redeemShares(market as MarketType);
+                }}
+                loading={isSendingUserOperation}
+              >
+                Redeem Shares
+              </Button>
+
+              <TransactionStatus
+                sendUserOperationResult={sendUserOperationResult}
+                isSendingUserOperation={isSendingUserOperation}
+                isSendUserOperationError={isSendUserOperationError}
+              />
+            </Flex>
+          )}
         </Card>
       </Flex>
     </Flex>

@@ -94,8 +94,8 @@ export const fetchMarketCost = async (
   return false;
 };
 
-export const fetchMarketMarginalPrice = async (marketIds: string[]) => {
-  const res = await sendRequest(`/markets/margin?market_ids=${marketIds}`, {
+export const fetchMarketMarginalPrice = async (marketId: string) => {
+  const res = await sendRequest(`/markets/margin?market_id=${marketId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

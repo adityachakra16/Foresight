@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from market.models import Market
 
 from market.private import (
+    calculate_costs_of_one_share,
     calculate_marginal_prices_of_markets,
     calculate_market_costs,
     create_market,
@@ -40,10 +41,10 @@ def get_cost(request):
     return JsonResponse({"success": True, "data": cost})
 
 
-def get_marginal_price(request):
-    market_ids = request.GET.get("market_ids")
-    market_ids = market_ids.split(",")
-    mp = calculate_marginal_prices_of_markets(market_ids)
+def get_marginal_cost(request):
+    market_id = request.GET.get("market_id")
+    buy_sell = request.GET.get("buy_sell", "buy")
+    mp = calculate_costs_of_one_share(int(market_id), buy_sell)
     return JsonResponse({"success": True, "data": mp})
 
 
@@ -76,7 +77,7 @@ class MarketResolutionView(View):
         data = json.loads(request.body)
         outcome = data.get("outcome")
         market_id = data.get("market_id")
-        resolution = resolve_market(market_id=market_id, outcome=outcome)
+        resolution = resolve_market(market_id=market_id, correct_outcome_index=outcome)
 
         if not resolution:
             return JsonResponse({"success": False, "error": "Failed to resolve market"})

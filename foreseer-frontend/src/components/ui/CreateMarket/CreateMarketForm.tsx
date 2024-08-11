@@ -158,6 +158,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
   const router = useRouter();
   const { currentUser } = useForesightUser();
   const [name, setName] = useState("");
+  const [currentReputationScore, setCurrentReputationScore] = useState(10);
   const [description, setDescription] = useState("");
   const [expiration, setExpiration] = useState<Date | null>(null);
   const [resolutionOracleFeedType, setResolutionOracleFeedType] = useState("");
@@ -357,6 +358,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
               }}
             >
               <Button
+                type={currentReputationScore < 0 ? "secondary" : "primary"}
                 style={{
                   width: "100%",
                 }}
@@ -378,6 +380,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
                   }
                 }}
                 loading={isSendingUserOperation}
+                disabled={currentReputationScore < 0}
               >
                 Create Market
               </Button>
@@ -392,6 +395,8 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
               websiteUrl,
               priceFeedAddress,
             }}
+            currentScore={currentReputationScore}
+            setCurrentScore={setCurrentReputationScore}
           />
         </Flex>
       )}

@@ -107,3 +107,21 @@ export const fetchMarketMarginalPrice = async (marketId: string) => {
   }
   return false;
 };
+
+export const fetchMarketReputation = async (market: CreateMarketDto) => {
+  const res = await sendRequest(`/market/reputation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: market.name,
+      description: market.description,
+    }),
+  });
+
+  if (res.success) {
+    return res.data;
+  }
+  return false;
+};

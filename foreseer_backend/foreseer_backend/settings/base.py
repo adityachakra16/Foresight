@@ -144,3 +144,105 @@ MARKET_RESOLVER_ADDRESS = ""
 CONDITIONAL_TOKEN_ADDRESS = "0xdC4665caB778D03D9D4Eb834a09946a779E8Efd8"
 AMM_FACTORY_ADDRESS = "0xF5178A2Da05F7CeE9Fb17B6C5e37aCf85B9Eca56"
 COLLATERAL_TOKEN_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e"  # USDC
+AMM_FACTORY_ABI = [
+    {
+        "inputs": [],
+        "payable": False,
+        "stateMutability": "nonpayable",
+        "type": "constructor",
+    },
+    {
+        "anonymous": False,
+        "inputs": [
+            {
+                "indexed": True,
+                "internalType": "address",
+                "name": "creator",
+                "type": "address",
+            },
+            {
+                "indexed": False,
+                "internalType": "address",
+                "name": "lmsrMarketMaker",
+                "type": "address",
+            },
+            {
+                "indexed": False,
+                "internalType": "address",
+                "name": "pmSystem",
+                "type": "address",
+            },
+            {
+                "indexed": False,
+                "internalType": "address",
+                "name": "collateralToken",
+                "type": "address",
+            },
+            {
+                "indexed": False,
+                "internalType": "bytes32[]",
+                "name": "conditionIds",
+                "type": "bytes32[]",
+            },
+            {
+                "indexed": False,
+                "internalType": "uint64",
+                "name": "fee",
+                "type": "uint64",
+            },
+            {
+                "indexed": False,
+                "internalType": "uint256",
+                "name": "funding",
+                "type": "uint256",
+            },
+        ],
+        "name": "LMSRMarketMakerCreation",
+        "type": "event",
+    },
+    {
+        "constant": True,
+        "inputs": [],
+        "name": "implementationMaster",
+        "outputs": [
+            {"internalType": "contract LMSRMarketMaker", "name": "", "type": "address"}
+        ],
+        "payable": False,
+        "stateMutability": "view",
+        "type": "function",
+    },
+    {
+        "constant": False,
+        "inputs": [
+            {
+                "internalType": "contract ConditionalTokens",
+                "name": "pmSystem",
+                "type": "address",
+            },
+            {
+                "internalType": "contract IERC20",
+                "name": "collateralToken",
+                "type": "address",
+            },
+            {"internalType": "bytes32[]", "name": "conditionIds", "type": "bytes32[]"},
+            {"internalType": "uint64", "name": "fee", "type": "uint64"},
+            {
+                "internalType": "contract Whitelist",
+                "name": "whitelist",
+                "type": "address",
+            },
+            {"internalType": "uint256", "name": "funding", "type": "uint256"},
+        ],
+        "name": "createLMSRMarketMaker",
+        "outputs": [
+            {
+                "internalType": "contract LMSRMarketMaker",
+                "name": "lmsrMarketMaker",
+                "type": "address",
+            }
+        ],
+        "payable": False,
+        "stateMutability": "nonpayable",
+        "type": "function",
+    },
+]

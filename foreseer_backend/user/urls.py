@@ -10,11 +10,11 @@ urlpatterns = [
     path(
         "api/user/markets",
         views.VerifiedUserView.as_view(),
-        name="user",
+        name="user_markets",
     ),
     path(
         "api/user/positions",
-        views.VerifiedUserView.as_view(),
-        name="user",
+        views.get_user_position,
+        name="user_positions",
     ),
 ]

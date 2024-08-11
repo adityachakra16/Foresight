@@ -13,8 +13,8 @@ urlpatterns = [
         name="market_liquidity",
     ),
     path(
-        "api/markets/costs",
-        views.get_costs,
+        "api/markets/cost",
+        views.get_cost,
         name="market_costs",
     ),
     path("api/markets/margin", views.get_marginal_price, name="market_marginal"),
@@ -26,6 +26,11 @@ urlpatterns = [
     path(
         "api/market/reputation",
         views.MarketReputationView.as_view(),
+        name="market_reputation",
+    ),
+    path(
+        "api/market/resolve",
+        views.MarketResolutionView.as_view(),
         name="market_reputation",
     ),
 ]

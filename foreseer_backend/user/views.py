@@ -6,7 +6,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from user.private import create_user, get_user_details
+from user.private import create_user, get_user_details, get_user_positions
 
 # Create your views here.
 
@@ -33,3 +33,15 @@ class VerifiedUserView(View):
             return JsonResponse({"success": False, "error": "User not found"})
 
         return JsonResponse({"success": True, "data": user})
+
+
+def get_user_position(request):
+    market_id = request.GET.get("market_id")
+    email = request.GET.get("email")
+
+    position = get_user_positions(email, market_id)
+
+    if not position:
+        return JsonResponse({"success": False, "error": "User Position not found"})
+
+    return JsonResponse({"success": True, "data": position})

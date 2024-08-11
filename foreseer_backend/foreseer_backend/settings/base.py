@@ -140,10 +140,10 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 REPUTATION_TOKEN_ADDRESS = "0xfF4f37AA9d561c63fd90596C6Db40B885FcC7D56"
-MARKET_RESOLVER_ADDRESS = ""
+MARKET_RESOLVER_ORACLE_ADDRESS = "0xf4D70D2fd1DE59ff34aA0350263ba742cb94b1c8"
 CONDITIONAL_TOKEN_ADDRESS = "0xdC4665caB778D03D9D4Eb834a09946a779E8Efd8"
 AMM_FACTORY_ADDRESS = "0xF5178A2Da05F7CeE9Fb17B6C5e37aCf85B9Eca56"
-COLLATERAL_TOKEN_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e"  # USDC
+COLLATERAL_TOKEN_ADDRESS = "0xcFf8538Ec3064B96cDD924ec9B8cd7FD857D2B62"  # USDC
 AMM_FACTORY_ABI = [
     {
         "inputs": [],
@@ -256,4 +256,46 @@ ERC_20_ABI = [
         "outputs": [{"name": "balance", "type": "uint256"}],
         "type": "function",
     }
+]
+
+
+CONDITIONAL_TOKEN_ABI = [
+    {
+        "constant": False,
+        "inputs": [
+            {"name": "questionId", "type": "bytes32"},
+            {"name": "payouts", "type": "uint256[]"},
+        ],
+        "name": "reportPayouts",
+        "outputs": [],
+        "payable": False,
+        "stateMutability": "nonpayable",
+        "type": "function",
+    }
+]
+
+
+MM_ABI = [
+    {
+        "constant": True,
+        "inputs": [{"name": "outcomeTokenAmounts", "type": "int256[]"}],
+        "name": "calcNetCost",
+        "outputs": [{"name": "netCost", "type": "int256"}],
+        "type": "function",
+    },
+    {
+        "constant": True,
+        "inputs": [{"name": "outcomeTokenIndex", "type": "uint8"}],
+        "name": "calcMarginalPrice",
+        "outputs": [{"name": "price", "type": "int256"}],
+        "type": "function",
+    },
+    {
+        "constant": True,
+        "inputs": [],
+        "name": "funding",
+        "outputs": [{"name": "", "type": "uint256"}],
+        "type": "function",
+        "stateMutability": "view",
+    },
 ]

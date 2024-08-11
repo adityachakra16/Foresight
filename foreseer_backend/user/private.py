@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from market.private import get_user_position_in_market
 from user.models import UserDetails
 import requests
 from web3 import Web3
@@ -150,3 +151,17 @@ def get_user_details(email):
         "markets_participated": user_details.markets_participated,
         "is_verified": user_details.is_verified,
     }
+
+
+def get_user_positions(email, market_id=None):
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return None
+
+    user_details = UserDetails.objects.filter(user=user).first()
+    position = get_user_position_in_market(
+        market_id,
+        user_details.ethAddress,
+    )
+
+    return position

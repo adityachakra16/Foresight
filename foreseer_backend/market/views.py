@@ -7,7 +7,43 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from market.models import Market
 
-from market.private import create_market, get_market_by_id, get_market_reputation
+from market.private import (
+    calculate_costs_of_markets,
+    calculate_marginal_prices_of_markets,
+    create_market,
+    get_liquidity_of_markets,
+    get_market_by_id,
+    get_market_reputation,
+)
+
+
+def get_liquidity(request):
+    market_ids = request.GET.get("market_ids")
+    market_ids = market_ids.split(",")
+    liq = get_liquidity_of_markets(market_ids)
+
+    if not liq:
+        return JsonResponse({"success": False, "error": "Failed to get liquidity"})
+
+    return JsonResponse({"success": True, "data": liq})
+
+
+def get_costs(request):
+    market_ids = request.GET.get("market_ids")
+    market_ids = market_ids.split(",")
+    costs = calculate_costs_of_markets(market_ids)
+
+    if not costs:
+        return JsonResponse({"success": False, "error": "Failed to get costs"})
+
+    return JsonResponse({"success": True, "data": costs})
+
+
+def get_marginal_price(request):
+    market_ids = request.GET.get("market_ids")
+    market_ids = market_ids.split(",")
+    mp = calculate_marginal_prices_of_markets(market_ids)
+    return JsonResponse({"success": True, "data": mp})
 
 
 # Create your views here.

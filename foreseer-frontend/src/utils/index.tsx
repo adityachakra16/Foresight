@@ -1,3 +1,5 @@
+import { formatUnits } from "ethers";
+
 const days = [
   "Sunday",
   "Monday",
@@ -133,4 +135,12 @@ export function numberToBytes32(num: number) {
 
   // Add the '0x' prefix
   return "0x" + paddedHexString;
+}
+
+export function convertBigNumberToNumber(bigNumber: bigint): number {
+  return parseFloat(formatUnits(bigNumber, 18));
+}
+
+export function convertNumberToBigNumber(number: number): bigint {
+  return BigInt(number * 10 ** 18);
 }

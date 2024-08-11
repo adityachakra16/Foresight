@@ -15,7 +15,7 @@ export const fetchPublicMarkets = async () => {
 };
 
 export const fetchMarket = async (marketId: string) => {
-  const res = await sendRequest(`/market/${marketId}`, {
+  const res = await sendRequest(`/market?id=${marketId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -52,6 +52,56 @@ export const updateMarket = async (
     },
     body: JSON.stringify(marketData),
   });
+  if (res.success) {
+    return res.data;
+  }
+  return false;
+};
+
+export const fetchMarketLiquidity = async (marketIds: string[]) => {
+  const res = await sendRequest(`/markets/liquidity?market_ids=${marketIds}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (res.success) {
+    return res.data;
+  }
+  return false;
+};
+
+export const fetchMarketCost = async (
+  marketId: number,
+  outcomeIdx: number,
+  shares: bigint,
+  buySell: string
+) => {
+  const res = await sendRequest(
+    `/markets/cost?market_id=${marketId}&outcome_index=${outcomeIdx}&shares=${shares}&buy_sell=${buySell}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (res.success) {
+    return res.data;
+  }
+  return false;
+};
+
+export const fetchMarketMarginalPrice = async (marketIds: string[]) => {
+  const res = await sendRequest(`/markets/margin?market_ids=${marketIds}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
   if (res.success) {
     return res.data;
   }

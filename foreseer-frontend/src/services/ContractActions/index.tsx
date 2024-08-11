@@ -13,6 +13,7 @@ import { CreateMarketDto } from "@/dtos";
 import { numberToBytes32 } from "@/utils";
 import conditionalToken from "@/abis/ConditionalToken.json";
 import marketMakerFactory from "@/abis/MarketMakerFactory.json";
+import marketMaker from "@/abis/MarketMaker.json";
 import erc20 from "@/abis/ERC20.json";
 import { parseUnits, formatUnits } from "ethers";
 
@@ -71,7 +72,7 @@ export const useContractActions = () => {
       args: [ethAddress],
     });
 
-    const fundingBigInt = parseUnits(funding.toString(), 6);
+    const fundingBigInt = parseUnits(funding.toString(), 18);
 
     console.log({ balance, ethAddress });
     if ((balance as bigint) < fundingBigInt) {
@@ -98,7 +99,7 @@ export const useContractActions = () => {
       ],
     });
 
-    const fundingBigInt = parseUnits(funding.toString(), 6);
+    const fundingBigInt = parseUnits(funding.toString(), 18);
 
     const approvalData = encodeFunctionData({
       abi: erc20.abi,
@@ -144,33 +145,54 @@ export const useContractActions = () => {
   };
 
   const buyShares = async (
-    marketId: number,
+    market: MarketType,
     tokenAmounts: number[],
-    from: string
+    cost: number
   ) => {
     if (!client) {
       console.log("Client is undefined");
       return;
     }
 
-    const ammAddress = "0x";
-    const cost = 0;
+    const bnTokenAmounts = tokenAmounts.map((amount) =>
+      parseUnits(amount.toString(), 18)
+    );
+
+    const approvalData = encodeFunctionData({
+      abi: erc20.abi,
+      functionName: "approve",
+      args: [
+        market.ammAddress,
+        /// Max Uint256
+        BigInt(
+          "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        ),
+      ],
+    });
+    console.log({ bnTokenAmounts, cost, amm: market.ammAddress });
+
     const uo = await sendUserOperation({
-      uo: {
-        target: ammAddress as "0x",
-        data: encodeFunctionData({
-          abi: marketMakerFactory.abi,
-          functionName: "trade",
-          args: [tokenAmounts, cost, from],
-        }),
-      },
+      uo: [
+        {
+          target: process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS as "0x",
+          data: approvalData,
+        },
+        {
+          target: market.ammAddress as "0x",
+          data: encodeFunctionData({
+            abi: marketMaker.abi,
+            functionName: "trade",
+            args: [bnTokenAmounts, cost],
+          }),
+        },
+      ],
     });
   };
 
   const sellShares = async (
-    marketId: string,
-    outcomeId: string,
-    amount: number
+    market: MarketType,
+    tokenAmounts: number[],
+    cost: number
   ) => {};
 
   return {

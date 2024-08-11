@@ -7,9 +7,13 @@ import Tag from "@/components/atoms/Tag";
 import { Typography } from "@/components/atoms/Typography";
 import { useMarket } from "@/context/Market";
 import { useForesightUser } from "@/context/User";
+import { useContractActions } from "@/services/ContractActions";
+import { convertBigNumberToNumber } from "@/utils";
+import { sign } from "crypto";
 import { useEffect, useState } from "react";
 import { CiClock2 } from "react-icons/ci";
 import { FaBookmark, FaRegClock, FaShare } from "react-icons/fa";
+import { TransactionStatus } from "../TransactionStatus";
 
 const { Heading, Text } = Typography;
 
@@ -22,22 +26,35 @@ interface TabContentProps {
 const TabContent = ({}) => {};
 
 export const Market = () => {
-  const { market } = useMarket();
+  const {
+    market,
+    shares,
+    setShares,
+    liquidity,
+    marginalPrice,
+    cost,
+
+    outcome,
+    setOutcome,
+    selectedTab,
+    setSelectedTab,
+    refreshCost,
+  } = useMarket();
   const { userPositions } = useForesightUser();
+  const {
+    buyShares,
+    sellShares,
+    sendUserOperationResult,
+    isSendingUserOperation,
+    isSendUserOperationError,
+  } = useContractActions();
+
   const [positions, setPositions] = useState<PositionType[]>();
-  const [selectedTab, setSelectedTab] = useState<"buy" | "sell">("buy");
-  const [outcome, setOutcome] = useState<string>("yes");
-  const [shares, setShares] = useState<number>(0);
 
   useEffect(() => {
     const pos = userPositions.filter(
       (position) => position.market.id === market?.id
     );
-    console.log({
-      pos,
-      userPositions,
-      market,
-    });
     if (pos) {
       setPositions(pos);
     }
@@ -94,7 +111,7 @@ export const Market = () => {
                   color: "grey",
                 }}
               >
-                ${market?.totalAmount || "1000"} Bet
+                ${liquidity / 10 ** 18 || "1000"} Bet
               </Text>
             </Flex>
             <Flex gap={0.2} align="center">
@@ -219,14 +236,14 @@ export const Market = () => {
                   style={{ width: "50%" }}
                   onClick={() => setOutcome("yes")}
                 >
-                  Yes
+                  {`Yes ${marginalPrice[0].toFixed(2)}`}
                 </Button>
                 <Button
                   type={outcome === "yes" ? "outlined" : "sell"}
                   style={{ width: "50%" }}
                   onClick={() => setOutcome("no")}
                 >
-                  No
+                  {`No ${marginalPrice[1].toFixed(2)}`}
                 </Button>
               </Flex>
             </Flex>
@@ -239,28 +256,72 @@ export const Market = () => {
                 Shares
               </Text>
               <Input
-                type="number"
                 value={shares}
-                onChange={(e) => setShares(parseInt(e.target.value))}
+                onChange={(e) => setShares(e.target.value)}
+                onBlur={refreshCost}
               />
             </Flex>
           </Flex>
-          <Button
-            style={{
-              width: "100%",
-              marginTop: "2.4rem",
-            }}
-            type={selectedTab}
-            onClick={() => {
-              console.log({
-                selectedTab,
-                outcome,
-                shares,
-              });
-            }}
+          <Flex
+            gap="small"
+            style={{ width: "100%", marginTop: "2.4rem" }}
+            vertical
+            align="center"
           >
-            {selectedTab === "buy" ? "Buy" : "Sell"} Shares
-          </Button>
+            <Flex style={{ width: "100%" }} gap="small" justify="space-between">
+              <Text
+                style={{
+                  color: "grey",
+                }}
+              >
+                Cost
+              </Text>
+              <Text>${(cost / 10 ** 18).toFixed(2)}</Text>
+            </Flex>
+            <Button
+              style={{
+                width: "100%",
+              }}
+              type={selectedTab}
+              onClick={() => {
+                console.log({
+                  selectedTab,
+                  outcome,
+                  shares,
+                });
+                let tokenAmounts = [0, 0];
+                let signedShares = 0;
+                if (selectedTab === "buy") {
+                  signedShares = parseInt(shares);
+                }
+                if (selectedTab === "sell") {
+                  signedShares = -parseInt(shares);
+                }
+
+                if (outcome === "yes") {
+                  tokenAmounts = [signedShares, 0];
+                }
+                if (outcome === "no") {
+                  tokenAmounts = [0, signedShares];
+                }
+
+                if (selectedTab === "buy") {
+                  buyShares(market as MarketType, tokenAmounts, cost);
+                } else {
+                  sellShares(market as MarketType, tokenAmounts, cost);
+                }
+              }}
+              loading={isSendingUserOperation}
+            >
+              {selectedTab === "buy" ? "Buy" : "Sell"} Shares
+            </Button>
+
+            <TransactionStatus
+              sendUserOperationResult={sendUserOperationResult}
+              isSendingUserOperation={isSendingUserOperation}
+              isSendUserOperationError={isSendUserOperationError}
+            />
+          </Flex>
         </Card>
       </Flex>
     </Flex>

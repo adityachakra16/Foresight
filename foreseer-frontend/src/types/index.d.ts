@@ -40,6 +40,7 @@ interface MarketType {
   description: string;
   totalAmount: number;
   expiration: string;
+  ammAddress: string;
 }
 
 interface DetailedMarketType extends MarketType {

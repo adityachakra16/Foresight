@@ -188,8 +188,6 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
       setFormStage("liquidity");
     } else if (sendUserOperationResult && formStage === "liquidity") {
       setFormStage("completed");
-    } else {
-      setFormStage("form");
     }
   }, [sendUserOperationResult]);
 
@@ -420,8 +418,7 @@ export const CreateMarketForm = ({}: CreateMarketFormProps) => {
               endcomponent={<Text>USDC</Text>}
               onBlur={async () => {
                 const fundingRequired = await insufficientBalance(
-                  parseInt(liquidity),
-                  currentUser?.ethAddress || ""
+                  parseInt(liquidity)
                 );
                 setFundingRequired(fundingRequired);
               }}
